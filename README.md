@@ -4,7 +4,7 @@ A short, research-informed course for parents and caregivers of adults with ADHD
 
 ## Run locally
 
-Install Node.js, then run `npm ci` and `npm run serve`. Visit <http://127.0.0.1:4173>. For development with automatic browser refresh when site HTML, CSS, or JavaScript changes, use `npm run watch` instead; no Docker rebuild is needed. To use another port, run `npm run watch -- --port 4174` and visit <http://127.0.0.1:4174>. Alternatively set the `PORT` environment variable; the `--port` flag takes precedence. JavaScript is required for the interactive course. These local servers are for development only.
+Install Node.js, then run `npm ci` and `npm run serve`. Visit <http://127.0.0.1:4173>. For development with automatic browser refresh when site HTML, CSS, JavaScript, or SVG changes, use `npm run watch` instead; no Docker rebuild is needed. To use another port, run `npm run watch -- --port 4174` and visit <http://127.0.0.1:4174>. Alternatively set the `PORT` environment variable; the `--port` flag takes precedence. JavaScript is required for the interactive course. These local servers are for development only.
 
 Use the Dark mode or Light mode button in the header to change the theme. Light mode is the default; your choice is saved in this browser, separately from your resume link.
 

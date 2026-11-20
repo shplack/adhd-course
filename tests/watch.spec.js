@@ -76,6 +76,7 @@ test("watch server reloads changed files and preserves a quiz deep link", async 
       "course.js",
       "progress.js",
       "styles.css",
+      "favicon.svg",
     ]) {
       await copyFile(resolve(file), join(dir, file));
     }
@@ -114,6 +115,7 @@ test("watch server reloads changed files and preserves a quiz deep link", async 
       ["app.js", "\n// watch test\n"],
       ["course.js", "\n// watch test\n"],
       ["progress.js", "\n// watch test\n"],
+      ["favicon.svg", "\n<!-- watch test -->\n"],
       ["index.html", null],
     ]) {
       const reconnect = page.waitForResponse((response) =>

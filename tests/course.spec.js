@@ -5,6 +5,21 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("favicon loads on home and resume URLs", async ({ page, request }) => {
+  const token = encodeProgress({ current: 1, completed: [0] }, modules);
+  for (const path of ["/", `/${token}`]) {
+    await page.goto(path);
+    const icon = page.locator('link[rel="icon"]');
+    await expect(icon).toHaveAttribute("href", "/favicon.svg");
+    const response = await request.get(
+      new URL(await icon.getAttribute("href"), page.url()).href,
+    );
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("image/svg+xml");
+    expect(await response.text()).toContain("<svg");
+  }
+});
+
 test("legacy links upgrade in place and explain quiz resets", async ({
   page,
 }) => {

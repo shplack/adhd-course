@@ -14,6 +14,8 @@ services:
         - action: rebuild
           path: ./styles.css
         - action: rebuild
+          path: ./favicon.svg
+        - action: rebuild
           path: ./nginx.conf
         - action: rebuild
           path: ./Dockerfile

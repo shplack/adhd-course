@@ -33,11 +33,12 @@ const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
+  ".svg": "image/svg+xml",
 };
 if (watching) {
   let timer;
   watch(root, (event, name) => {
-    if (name && !/\.(html|css|js)$/i.test(name.toString())) return;
+    if (name && !/\.(html|css|js|svg)$/i.test(name.toString())) return;
     clearTimeout(timer);
     timer = setTimeout(() => {
       for (const client of clients) client.write("data: reload\n\n");
