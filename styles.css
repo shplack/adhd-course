@@ -200,6 +200,9 @@ nav ol {
   padding: 0.35rem;
   background: #fff;
 }
+#reset-progress {
+  margin-top: 0.8rem;
+}
 #copy-message:empty,
 #invalid-link:empty,
 #quiz-result:empty {

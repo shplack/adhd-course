@@ -272,6 +272,16 @@ $("#copy-link").addEventListener("click", async () => {
       "Copy was not available. Your link is selected; copy it manually.";
   }
 });
+
+$("#reset-progress").addEventListener("click", () => {
+  if (
+    window.confirm(
+      "Are you sure? This starts the course again with no quizzes completed.",
+    )
+  ) {
+    window.location.assign("/");
+  }
+});
 document.querySelector(".skip-link").addEventListener("click", (event) => {
   event.preventDefault();
   $("#lesson").focus();

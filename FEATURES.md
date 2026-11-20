@@ -7,6 +7,7 @@
 - [x] A pointer-only reminder before skipping an unfinished quiz; keyboard and assistive-technology virtual clicks continue immediately.
 - [x] A diploma and playful pretend password after all quizzes are completed, with a shortcut to the next unfinished quiz.
 - [x] Shareable, versioned progress links in path and fragment forms, with legacy migration, selective quiz resets and invalid-link recovery.
+- [x] Confirmed course-progress reset without changing the saved theme or existing links.
 - [x] An accessible dark mode toggle that remembers the choice in this browser; light mode is the default.
 - [x] Keyboard navigation, focus management, semantic structure, and live feedback.
 - [x] Unit tests, automated accessibility checks for every module and feedback state, and keyboard and browser tests.

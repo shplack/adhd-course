@@ -95,6 +95,55 @@ test("changed or removed modules produce accessible migration feedback", async (
   await axe(page);
 });
 
+test("reset confirms before restarting and keeps saved links and theme", async ({
+  page,
+}) => {
+  const token = encodeProgress(
+    { current: 2, completed: [0, 1], view: "quiz" },
+    modules,
+  );
+  await page.goto(`/?source=saved#${token}`);
+  await page.getByRole("button", { name: "Dark mode" }).click();
+  const before = page.url();
+  const reset = page.getByRole("button", { name: "Reset course progress" });
+  await expect(reset).toBeVisible({ timeout: 5000 });
+  await expect(page.locator("#progress-count")).toHaveText(
+    "2 of 4 modules completed",
+  );
+  await axe(page);
+  page.once("dialog", async (dialog) => {
+    expect(dialog.type()).toBe("confirm");
+    expect(dialog.message()).toMatch(/are you sure/i);
+    expect(dialog.message()).toMatch(/start.*again.*no quizzes completed/i);
+    await dialog.dismiss();
+  });
+  await reset.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(before);
+  await expect(page.locator("#progress-count")).toHaveText(
+    "2 of 4 modules completed",
+  );
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[2].title}` }),
+  ).toBeVisible();
+  page.once("dialog", (dialog) => dialog.accept());
+  await reset.focus();
+  await page.keyboard.press("Space");
+  await expect(page).toHaveURL(new URL("/", before).href);
+  await expect(page.locator("#progress-count")).toHaveText(
+    "0 of 4 modules completed",
+  );
+  await expect(
+    page.getByRole("heading", { name: modules[0].title, level: 2 }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeVisible();
+  await page.goto(before);
+  await expect(page.locator("#progress-count")).toHaveText(
+    "2 of 4 modules completed",
+  );
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeVisible();
+});
+
 test("unfinished lessons and quizzes remind pointer users before continuing", async ({
   page,
 }) => {
