@@ -1,6 +1,7 @@
 # Features
 
 - [x] Four research-informed lessons for parents of adults with ADHD, with detailed sublessons and clearly labelled practical examples.
+- [x] Optional plain-language summaries for each sublesson, available with a mouse, keyboard, or touch.
 - [x] Distinct peer-reviewed research citations for each module and a medical-information disclaimer.
 - [x] Three accessible questions per module, with individual feedback and completion tracking.
 - [x] Shareable, versioned progress links in path and fragment forms, with invalid-link recovery.

@@ -3,6 +3,22 @@ import assert from "node:assert/strict";
 import { modules } from "../course.js";
 import { decodeProgress } from "../progress.js";
 
+test("every sublesson has its own short simple summary", () => {
+  const summaries = new Set();
+  for (const module of modules) {
+    for (const section of module.sections) {
+      assert.equal(typeof section.summary, "string", section.title);
+      assert.ok(section.summary.trim().length > 0, section.title);
+      assert.ok(
+        section.summary.trim().split(/\s+/).length <= 55,
+        section.title,
+      );
+      assert.ok(!summaries.has(section.summary), section.title);
+      summaries.add(section.summary);
+    }
+  }
+});
+
 test("each sublesson has several paragraphs and a substantial labelled example", () => {
   for (const module of modules) {
     for (const section of module.sections) {

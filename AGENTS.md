@@ -6,6 +6,7 @@
 - Keep each module's citation verifiable, clearly external, and relevant to its claims. Avoid presenting practical suggestions as proven treatments.
 - Modules have three to five questions in `questions`, each with `prompt`, `options`, and a zero-based `answer`. All must be correct to complete the module. Research links must be distinct and include authors, year, title, and journal; preserve study limitations.
 - Each sublesson in `sections` has a `title`, at least three `paragraphs`, and an `example` with `scenario` and `try` text. Keep each sublesson 250–400 words, including its example, and frame suggestions as suggestions rather than proven treatment.
+- Each sublesson also has a separately written `summary` in plain adult language. Its disclosure is available on hover, keyboard focus, and touch; do not replace the original lesson.
 - Maintain keyboard behavior, semantic markup, visible focus, live feedback, and accessible names. Run `npm test` and test with real assistive technology when possible. Automated checks do not replace manual review.
 - Run `npm ci`, `npx playwright install chromium`, `npm test`, and `uvx pre-commit run --all-files`; install hooks using `uvx pre-commit install`. Hooks require Docker for hadolint and network access to obtain their pinned tools initially.
 - Format with `npm run format`. `npm run serve` is a development server only; use the hardened nginx image for distribution.

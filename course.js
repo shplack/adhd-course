@@ -7,6 +7,8 @@ export const modules = [
     sections: [
       {
         title: "More than attention",
+        summary:
+          "ADHD can make planning, remembering, or staying focused hard. Each person is different. Ask your adult child which part of a task is hard for them.",
         paragraphs: [
           "ADHD is more than occasionally losing focus. It involves a persistent pattern of inattention and/or hyperactivity and impulsivity that can interfere with daily life. An adult might struggle to organize a task, remember an appointment, begin a project, or keep track of several steps.",
           "Hyperactivity does not always look like a child running around. An adult may describe feeling restless, interrupting, or acting before thinking. People experience different combinations and degrees of difficulty. Someone can have strengths, interests, and skills alongside the parts of life that feel harder.",
@@ -22,6 +24,8 @@ export const modules = [
       },
       {
         title: "A different lens",
+        summary:
+          "A missed call or task does not mean your adult child does not care. Say what happened and how you feel. Ask what got in the way before you decide why it happened.",
         paragraphs: [
           "When someone you love misses a call or leaves a task unfinished, it is easy to take the event personally. Your feelings matter. At the same time, a missed task by itself cannot tell you whether the person cares, how much effort they made, or what got in the way.",
           "The consensus statement describes ADHD as associated with difficulties in everyday functioning and social life. Those findings describe patterns across groups; they do not explain every disagreement in a particular family. An individual's actions can have more than one cause, and ADHD does not remove the need for honest conversations.",
@@ -37,6 +41,8 @@ export const modules = [
       },
       {
         title: "Try this",
+        summary:
+          "Pick a calm time to talk. Ask your adult child what they want you to understand. Listen first, and ask if they want ideas before giving advice.",
         paragraphs: [
           "A short, curious conversation can be a starting point for understanding your adult child's experience. Choose a calm moment rather than beginning when either of you is already upset. Ask whether they have the time and energy to talk, and make it clear that a later conversation is also fine.",
           "You might ask, “What would you like me to understand about how ADHD affects you?” The question leaves space for their priorities rather than assuming you know the answer. They might want to describe a difficulty, share a success, correct a misunderstanding, or talk about something else entirely.",
@@ -92,6 +98,8 @@ export const modules = [
     sections: [
       {
         title: "Ask permission",
+        summary:
+          "Ask your adult child what kind of help they want. They may want advice, a listener, or no help right now. It is okay to say what you need too.",
         paragraphs: [
           "Your adult child may welcome your support while also wanting space to make their own decisions. Those wishes can exist together. Asking before giving advice makes it easier to understand what kind of help, if any, they want at that particular moment.",
           "The study linked below interviewed 11 first- and second-year college students with ADHD. Participants described appreciating parental support when they initiated or managed contact, while perceived overinvolvement could feel unhelpful. These interviews offer a useful perspective, but their small, mostly White college sample cannot represent every adult or family.",
@@ -107,6 +115,8 @@ export const modules = [
       },
       {
         title: "What the research found",
+        summary:
+          "A small study asked college students with ADHD about their parents' help. Some liked being able to ask for help themselves. Ask your adult child what kind of contact feels helpful to them.",
         paragraphs: [
           "The research for this lesson explored the transition to college through interviews with 11 students with ADHD. The researchers asked about parental involvement and how relationships changed as students gained responsibility. This was a small qualitative study: its aim was to understand experiences in depth, not to measure what works for every family.",
           "Students described parents as an important source of emotional support and advice. Several valued being able to seek that support while making decisions independently. Some also described tension when they felt a parent was too involved. The same kind of action could be experienced differently depending on the relationship and the situation.",
@@ -122,6 +132,8 @@ export const modules = [
       },
       {
         title: "Agree on useful help",
+        summary:
+          "Make a clear plan together before helping. Decide what each person will do and when. You can also say what you have time and energy to do.",
         paragraphs: [
           "An offer of help is easier to accept or decline when it is specific. Instead of “I will make sure everything gets done,” consider “Would you like me to sit with you for half an hour while you sort the paperwork?” Your adult child can decide whether that offer fits.",
           "If the answer is yes, agree on the details together. What will each person do? When will it happen? Would a reminder be welcome, and if so, how and when? A clear agreement reduces the chance that one person expects a check-in while the other experiences it as supervision.",
@@ -177,6 +189,8 @@ export const modules = [
     sections: [
       {
         title: "Make the next step visible",
+        summary:
+          "A big task can have many small steps. If your adult child wants help, ask them to pick one step to start with. A list or calendar may be useful, but they get to choose.",
         paragraphs: [
           "A large task often contains many smaller decisions. “Sort out the appointment” might mean finding a phone number, checking opening hours, calling, choosing a date, and writing it down. Seeing one small next action can make the task easier to discuss without needing to solve the whole thing at once.",
           "If your adult child wants help, ask them where they would like to begin. They might prefer to write a short list, put a date in a calendar, or simply talk through the choices. The point is not to impose a particular system; it is to make the next step clear to the person doing it.",
@@ -192,6 +206,8 @@ export const modules = [
       },
       {
         title: "What the research studied",
+        summary:
+          "One study tested a talking therapy that included planning skills. It studied a whole program, not just a checklist. If your adult child is interested, they can ask a health professional about their options.",
         paragraphs: [
           "Safren and colleagues studied 86 adults with ADHD who were taking medication but still had significant symptoms. Participants were assigned to individual cognitive behavioral therapy or to relaxation with educational support. Both groups had twelve sessions, and researchers compared ADHD symptom ratings after treatment and during follow-up.",
           "The cognitive behavioral therapy program included learning about ADHD, organizing and planning with calendars and task lists, breaking down tasks, and strategies for managing distractions. It also included work on unhelpful thinking patterns. The comparison group received relaxation training, education, and support.",
@@ -207,6 +223,8 @@ export const modules = [
       },
       {
         title: "Experiment, do not police",
+        summary:
+          "There is no single planning tool that suits everyone. Ask if your adult child wants to try an idea. If it adds stress or is not useful, they can change it or stop.",
         paragraphs: [
           "A planning tool is only useful if the person using it finds it worthwhile. An elaborate calendar, a short paper list, and a conversation with a trusted person are different possibilities. Your adult child may already have a system that works for some tasks, even if it looks different from yours.",
           "Before suggesting a change, ask whether they want to explore one. If they do, agree on a small experiment with a clear end point, such as trying a reminder for one appointment. Your adult child can decide what the reminder says, where it appears, and whether anyone else should be involved.",
@@ -262,6 +280,8 @@ export const modules = [
     sections: [
       {
         title: "Care is a personal decision",
+        summary:
+          "Your adult child can discuss care with a health professional. A review found some medicines helped adults in the short term, but side effects and results varied. Offer to help prepare questions if they want.",
         paragraphs: [
           "Decisions about ADHD care belong to your adult child, in conversation with a qualified health professional. You can encourage an informed discussion without choosing a treatment for them. What matters to one person may include symptom relief, side effects, cost, access, personal preferences, or other health needs.",
           "The research linked below reviewed medication trials involving children, adolescents, and adults. In the adult trials, several medications performed better than placebo for clinician-rated core ADHD symptoms at the short-term assessment. Tolerability also varied, and some medications had more participants stop treatment because of side effects than placebo.",
@@ -277,6 +297,8 @@ export const modules = [
       },
       {
         title: "Offer support, not pressure",
+        summary:
+          "Ask your adult child how they want you involved in their care. They may want help with questions or they may prefer privacy. Respect their choice and leave the door open.",
         paragraphs: [
           "It can be difficult to watch someone you love consider care slowly, choose a different option, or decide not to discuss it. You can share your concern respectfully while recognizing that your adult child has a say in their own care and what information they share with you.",
           "Ask what support would be useful before making arrangements. They might want help finding a service, a quiet place to make a call, company on the journey, or no involvement. If they invite you to an appointment, agree beforehand on your role and what they are comfortable discussing.",
@@ -292,6 +314,8 @@ export const modules = [
       },
       {
         title: "Look after yourself too",
+        summary:
+          "Your needs matter too. You can care about your adult child and still set limits on your time. Ask for support for yourself when you need it, while respecting their privacy.",
         paragraphs: [
           "Supporting an adult child can bring affection, concern, frustration, and uncertainty at the same time. You do not have to solve every problem to be a caring parent. Paying attention to your own capacity can help you make offers you can genuinely keep and boundaries you can explain clearly.",
           "Think about what you need in ordinary terms: time to rest, someone to talk with, or a pause before responding to a difficult request. These are practical suggestions for looking after yourself, not treatments tested in the medication review linked below. Choose what fits your circumstances.",

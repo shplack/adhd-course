@@ -55,6 +55,22 @@ test("all modules expose accessible structure, citations, feedback and progress"
       await expect(
         sublesson.getByText(section.example.try, { exact: true }),
       ).toBeVisible();
+      await sublesson.getByText(section.paragraphs[0], { exact: true }).hover();
+      const summaryButton = sublesson.getByRole("button", {
+        name: `Simple summary: ${section.title}`,
+      });
+      await expect(summaryButton).toHaveCSS("opacity", "1");
+      await expect(summaryButton).toHaveAttribute("aria-expanded", "false");
+      await summaryButton.click();
+      await expect(summaryButton).toHaveAttribute("aria-expanded", "true");
+      await expect(
+        sublesson.getByText(section.summary, { exact: true }),
+      ).toBeVisible();
+      await summaryButton.click();
+      await expect(summaryButton).toHaveAttribute("aria-expanded", "false");
+      await expect(
+        sublesson.getByText(section.summary, { exact: true }),
+      ).toBeHidden();
     }
     const citation = page.getByRole("link", {
       name: /external resource.*opens in a new tab/i,
@@ -118,6 +134,47 @@ test("all modules expose accessible structure, citations, feedback and progress"
   await expect(
     page.getByRole("heading", { name: modules.at(-1).title }),
   ).toBeVisible();
+});
+
+test("summary is keyboard operable and available on touch screens", async ({
+  page,
+  browser,
+}) => {
+  await page.goto("/");
+  const section = page.locator(".lesson-section").first();
+  const button = section.getByRole("button", {
+    name: `Simple summary: ${modules[0].sections[0].title}`,
+  });
+  await button.focus();
+  await expect(button).toHaveCSS("opacity", "1");
+  await page.keyboard.press("Enter");
+  await expect(button).toHaveAttribute("aria-expanded", "true");
+  await expect(
+    section.getByText(modules[0].sections[0].summary, { exact: true }),
+  ).toBeVisible();
+  await axe(page);
+  await page.keyboard.press("Space");
+  await expect(button).toHaveAttribute("aria-expanded", "false");
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const touchPage = await context.newPage();
+    await touchPage.goto("/");
+    const touchButton = touchPage.getByRole("button", {
+      name: `Simple summary: ${modules[0].sections[0].title}`,
+    });
+    await expect(touchButton).toHaveCSS("opacity", "1");
+    await touchButton.tap();
+    await expect(touchButton).toHaveAttribute("aria-expanded", "true");
+    await expect(
+      touchPage.getByText(modules[0].sections[0].summary, { exact: true }),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
 });
 
 test("invalid and fragment links and keyboard navigation", async ({ page }) => {
