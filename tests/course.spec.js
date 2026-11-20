@@ -212,7 +212,7 @@ test("diploma stays locked when quizzes are skipped and points to the next unfin
     page.getByRole("heading", { name: "Your diploma" }),
   ).toBeFocused();
   await expect(page.getByText(/complete all 4 quizzes/i)).toBeVisible();
-  await expect(page.getByText(/one more tab/i)).toHaveCount(0);
+  await expect(page.getByText("I'll do it later...")).toHaveCount(0);
   await axe(page);
   await page.getByRole("button", { name: /next unfinished quiz/i }).click();
   await expect(
@@ -252,7 +252,7 @@ test("completing the last outstanding quiz unlocks the diploma and survives resu
   await expect(
     page.getByRole("heading", { name: "Your diploma" }),
   ).toBeFocused();
-  await expect(page.getByText(/one more tab/i)).toBeVisible();
+  await expect(page.getByText("I'll do it later...")).toBeVisible();
   await expect(page.getByText(/not a real password/i)).toBeVisible();
   await axe(page);
   const resume = new URL(page.url()).pathname;
@@ -260,14 +260,14 @@ test("completing the last outstanding quiz unlocks the diploma and survives resu
   await expect(
     page.getByRole("heading", { name: "Your diploma" }),
   ).toBeVisible();
-  await expect(page.getByText(/one more tab/i)).toBeVisible();
+  await expect(page.getByText("I'll do it later...")).toBeVisible();
   const oldLink = encodeProgress(
     { current: 0, completed: [0, 1, 2, 3] },
     modules.length,
   );
   await page.goto(`/${oldLink}`);
   await page.getByRole("button", { name: "View diploma" }).click();
-  await expect(page.getByText(/one more tab/i)).toBeVisible();
+  await expect(page.getByText("I'll do it later...")).toBeVisible();
 });
 
 test("summary is keyboard operable and available on touch screens", async ({

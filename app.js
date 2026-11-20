@@ -77,7 +77,7 @@ function render(focus) {
       ${
         isDiploma
           ? complete
-            ? `<section class="diploma"><h3>Course completed</h3><p>You completed all ${modules.length} quizzes. Thank you for taking the time to learn and listen.</p><p><strong>Your pretend course password:</strong> One more tab…</p><p>Just for fun — this is not a real password or credential.</p></section>`
+            ? `<section class="diploma"><h3>Course completed</h3><p>You completed all ${modules.length} quizzes. Thank you for taking the time to learn and listen.</p><p><strong>Your pretend course password:</strong> I'll do it later...</p><p>Just for fun — this is not a real password.</p></section>`
             : `<section class="diploma"><h3>Not quite there yet</h3><p>Complete all ${modules.length} quizzes to unlock your diploma. You have completed ${state.completed.length} of ${modules.length}.</p><p>Your next unfinished quiz is ${modules[nextUnfinished].title}.</p><button class="primary" type="button" id="unfinished">Go to next unfinished quiz: ${modules[nextUnfinished].title}</button></section>`
           : !isQuiz
             ? `
