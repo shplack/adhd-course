@@ -6,6 +6,8 @@ A short, research-informed course for parents and caregivers of adults with ADHD
 
 Install Node.js, then run `npm ci` and `npm run serve`. Visit <http://127.0.0.1:4173>. For development with automatic browser refresh when site HTML, CSS, or JavaScript changes, use `npm run watch` instead; no Docker rebuild is needed. To use another port, run `npm run watch -- --port 4174` and visit <http://127.0.0.1:4174>. Alternatively set the `PORT` environment variable; the `--port` flag takes precedence. JavaScript is required for the interactive course. These local servers are for development only.
 
+Use the Dark mode button in the header to change the theme. Light mode is the default; your choice is saved in this browser, separately from your resume link.
+
 ## Progress and privacy
 
 Copy the resume link after navigating or completing a quiz; an older saved link retains its older progress. Links work as `/<token>` or `/#<token>` and do not require an account or server-side storage. The token contains only a module number, the current lesson, quiz, or diploma view, and completion flags, not names or quiz answers. Unsubmitted answers are not saved. It is not secret, encrypted, or tamper-proof: anyone holding a link can inspect or change it. The diploma's pretend password is only a joke, not a credential. URLs may appear in browser history, logs, or messages, so share carefully. Invalid links start a fresh course with a message. Deploy at the domain root with a fallback to `index.html`.

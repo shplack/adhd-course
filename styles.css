@@ -53,6 +53,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   border-bottom: 1px solid #dfe7df;
   background: #fff;
 }
@@ -70,6 +71,16 @@ a {
 .header-note {
   color: #62726a;
   font-size: 0.82rem;
+  margin-left: auto;
+}
+.theme-toggle {
+  border: 1px solid #779788;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #224b40;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .page {
   max-width: 1440px;
@@ -402,6 +413,81 @@ footer {
   padding: 1.5rem 6%;
   font-size: 0.8rem;
   color: #536b61;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  color: #e4eee8;
+  background: #151e1b;
+}
+[data-theme="dark"] :focus-visible {
+  outline-color: #ffbf78;
+}
+[data-theme="dark"] a {
+  color: #a4e3bf;
+}
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .skip-link {
+  background: #202d28;
+}
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] .lesson-top,
+[data-theme="dark"] footer {
+  border-color: #536b5e;
+}
+[data-theme="dark"] .brand,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] .example h4 {
+  color: #e4f5ea;
+}
+[data-theme="dark"] h1 em,
+[data-theme="dark"] .header-note,
+[data-theme="dark"] .sidebar > p:not(.overline),
+[data-theme="dark"] .overline,
+[data-theme="dark"] .eyebrow,
+[data-theme="dark"] .lesson-top,
+[data-theme="dark"] .module-link small,
+[data-theme="dark"] .intro,
+[data-theme="dark"] .section-number,
+[data-theme="dark"] .lesson-section p,
+[data-theme="dark"] .source p,
+[data-theme="dark"] footer {
+  color: #c1d5c8;
+}
+[data-theme="dark"] .module-link {
+  color: #e4eee8;
+}
+[data-theme="dark"] .module-link.active,
+[data-theme="dark"] .save-box,
+[data-theme="dark"] .simple-summary:not([hidden]),
+[data-theme="dark"] .example,
+[data-theme="dark"] .source,
+[data-theme="dark"] .diploma {
+  background: #283c33;
+  border-color: #789c84;
+}
+[data-theme="dark"] .quiz,
+[data-theme="dark"] #invalid-link:not(:empty) {
+  background: #383026;
+  border-color: #c8a47a;
+}
+[data-theme="dark"] .answer,
+[data-theme="dark"] .save-box input,
+[data-theme="dark"] .save-box button,
+[data-theme="dark"] .summary-toggle,
+[data-theme="dark"] .theme-toggle {
+  background: #202d28;
+  color: #e4eee8;
+  border-color: #94b5a0;
+}
+[data-theme="dark"] .diploma p {
+  color: #e4eee8;
+}
+[data-theme="dark"] input[type="radio"],
+[data-theme="dark"] progress {
+  accent-color: #a4e3bf;
 }
 @media (max-width: 760px) {
   .page {

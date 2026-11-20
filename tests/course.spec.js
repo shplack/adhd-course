@@ -5,6 +5,97 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("dark mode is accessible, independent of progress, and remembers a choice", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const toggle = page.getByRole("button", { name: "Dark mode" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+  const resumeLink = await page.getByLabel("Your resume link").inputValue();
+
+  await toggle.focus();
+  await page.keyboard.press("Space");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("status")).toHaveText("Dark mode on.");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.getByLabel("Your resume link").inputValue()).toBe(
+    resumeLink,
+  );
+  expect(
+    await toggle.evaluate((element) => getComputedStyle(element).outlineStyle),
+  ).not.toBe("none");
+  await axe(page);
+
+  for (const module of modules) {
+    await page
+      .getByRole("navigation", { name: "Course modules" })
+      .getByRole("button", { name: new RegExp(module.title, "i") })
+      .click();
+    for (const button of await page
+      .getByRole("button", { name: /simple summary:/i })
+      .all()) {
+      await button.click();
+    }
+    await axe(page);
+  }
+  await page.goto("/invalid-token");
+  await expect(page.getByRole("alert")).toBeVisible();
+  await axe(page);
+  await page.getByRole("button", { name: "Take quiz" }).click();
+  await page.getByRole("button", { name: /check answers/i }).click();
+  await expect(page.locator("#quiz-result")).toContainText("Unanswered");
+  await axe(page);
+  await answerQuiz(page, modules[0], 0);
+  await expect(page.locator("#quiz-result")).toContainText("Try again");
+  await axe(page);
+  await answerQuiz(page, modules[0]);
+  await expect(page.locator("#quiz-result")).toContainText("Module completed");
+  await axe(page);
+
+  for (const completed of [[], modules.map((_, index) => index)]) {
+    const token = encodeProgress(
+      { current: 3, view: "diploma", completed },
+      modules.length,
+    );
+    await page.goto(`/${token}`);
+    await axe(page);
+  }
+  await page.reload();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(page.getByRole("status").first()).toHaveText("Dark mode off.");
+  await page.reload();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+});
+
+test("dark mode remains usable when browser storage is unavailable", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "localStorage", {
+      get() {
+        throw new DOMException("Storage unavailable", "SecurityError");
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.getByRole("status")).toHaveText(
+    "Your theme preference could not be loaded.",
+  );
+  const toggle = page.getByRole("button", { name: "Dark mode" });
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("status")).toHaveText(
+    "Dark mode on. Your choice could not be saved in this browser.",
+  );
+  await expect(page.getByRole("button", { name: "Take quiz" })).toBeVisible();
+});
+
 test("take quiz stands out from nearby navigation and remains keyboard accessible", async ({
   page,
 }) => {
@@ -156,17 +247,23 @@ test("all modules expose accessible structure, citations, feedback and progress"
       ).toBeVisible();
     await axe(page);
     await page.getByRole("button", { name: /check answers/i }).click();
-    await expect(page.getByRole("status")).toContainText(/unanswered/i);
+    await expect(page.locator("#quiz").getByRole("status")).toContainText(
+      /unanswered/i,
+    );
     await axe(page);
     await answerQuiz(page, module, 1);
-    await expect(page.getByRole("status")).toContainText(/question 2/i);
+    await expect(page.locator("#quiz").getByRole("status")).toContainText(
+      /question 2/i,
+    );
     await expect(
       page.getByText(`${index} of ${modules.length} modules completed`),
     ).toBeVisible();
     await axe(page);
     await answerQuiz(page, module);
-    await expect(page.getByRole("status")).toContainText(/completed/i);
-    await expect(page.getByRole("status")).toHaveAttribute(
+    await expect(page.locator("#quiz").getByRole("status")).toContainText(
+      /completed/i,
+    );
+    await expect(page.locator("#quiz").getByRole("status")).toHaveAttribute(
       "aria-live",
       "polite",
     );
@@ -276,7 +373,9 @@ test("completing the last outstanding quiz unlocks the diploma and survives resu
       .click();
     await page.getByRole("button", { name: "Take quiz" }).click();
     await answerQuiz(page, modules[index]);
-    await expect(page.getByRole("status")).not.toContainText(/diploma.*ready/i);
+    await expect(page.locator("#quiz").getByRole("status")).not.toContainText(
+      /diploma.*ready/i,
+    );
   }
   const partialResume = page.url();
   await page.goto(partialResume);
@@ -288,7 +387,9 @@ test("completing the last outstanding quiz unlocks the diploma and survives resu
     .click();
   await page.getByRole("button", { name: "Take quiz" }).click();
   await answerQuiz(page, modules[1]);
-  await expect(page.getByRole("status")).toContainText(/diploma.*ready/i);
+  await expect(page.locator("#quiz").getByRole("status")).toContainText(
+    /diploma.*ready/i,
+  );
   const view = page.getByRole("button", { name: "View diploma" });
   await view.focus();
   await page.keyboard.press("Enter");

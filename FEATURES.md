@@ -6,6 +6,7 @@
 - [x] A separate accessible quiz view for each module, with three questions, individual feedback, and completion tracking.
 - [x] A diploma and playful pretend password after all quizzes are completed, with a shortcut to the next unfinished quiz.
 - [x] Shareable, versioned progress links in path and fragment forms, with invalid-link recovery.
+- [x] An accessible dark mode toggle that remembers the choice in this browser; light mode is the default.
 - [x] Keyboard navigation, focus management, semantic structure, and live feedback.
 - [x] Unit tests, automated accessibility checks for every module and feedback state, and keyboard and browser tests.
 - [x] Formatting, syntax, file hygiene, secret detection, and Dockerfile lint through pre-commit.

@@ -5,6 +5,31 @@ const $ = (selector) => document.querySelector(selector);
 const fresh = () => ({ current: 0, completed: [] });
 let state = fresh();
 
+const themeToggle = $("#theme-toggle");
+const themeStatus = $("#theme-status");
+function setTheme(dark) {
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeToggle.setAttribute("aria-pressed", String(dark));
+}
+try {
+  setTheme(localStorage.getItem("alongside-theme") === "dark");
+} catch {
+  setTheme(false);
+  themeStatus.textContent = "Your theme preference could not be loaded.";
+}
+themeToggle.hidden = false;
+themeToggle.addEventListener("click", () => {
+  const dark = themeToggle.getAttribute("aria-pressed") !== "true";
+  setTheme(dark);
+  const message = `Dark mode ${dark ? "on" : "off"}.`;
+  try {
+    localStorage.setItem("alongside-theme", dark ? "dark" : "light");
+    themeStatus.textContent = message;
+  } catch {
+    themeStatus.textContent = `${message} Your choice could not be saved in this browser.`;
+  }
+});
+
 function tokenFromLocation() {
   return location.hash
     ? location.hash.slice(1)
