@@ -1,6 +1,22 @@
 services:
   course:
     build: .
+    develop:
+      watch:
+        - action: rebuild
+          path: ./index.html
+        - action: rebuild
+          path: ./app.js
+        - action: rebuild
+          path: ./course.js
+        - action: rebuild
+          path: ./progress.js
+        - action: rebuild
+          path: ./styles.css
+        - action: rebuild
+          path: ./nginx.conf
+        - action: rebuild
+          path: ./Dockerfile
     ports:
       - "127.0.0.1:8080:8080"
     read_only: true

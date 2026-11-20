@@ -10,4 +10,5 @@
 - [x] Unit tests, automated accessibility checks for every module and feedback state, and keyboard and browser tests.
 - [x] Formatting, syntax, file hygiene, secret detection, and Dockerfile lint through pre-commit.
 - [x] Development watch command that refreshes the browser when site files change, with a configurable port.
+- [x] Docker Compose watch rebuilds the container when site or server files change.
 - [x] Non-root static container with a read-only filesystem example and security headers.

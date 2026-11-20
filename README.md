@@ -16,7 +16,7 @@ Run `npx playwright install chromium` once and `npm test` for unit, keyboard, sc
 
 ## Docker
 
-Run `docker compose up --build` and visit <http://127.0.0.1:8080>. The example runs unprivileged with a read-only root filesystem, a temporary writable `/tmp`, all capabilities dropped, and no new privileges. Alternatively: `docker build -t alongside .` then `docker run --rm -p 127.0.0.1:8080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges alongside`. Terminate TLS at a trusted reverse proxy in production. The image serves on port 8080 and exposes `/health`.
+Run `docker compose up --build` and visit <http://127.0.0.1:8080>. For Docker development, `docker compose watch` rebuilds and restarts the container when site files, `nginx.conf`, or the Dockerfile change. It does not refresh the browser automatically; reload the page yourself. For automatic browser refresh without rebuilding, use `npm run watch` instead. The example runs unprivileged with a read-only root filesystem, a temporary writable `/tmp`, all capabilities dropped, and no new privileges. Alternatively: `docker build -t alongside .` then `docker run --rm -p 127.0.0.1:8080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges alongside`. Terminate TLS at a trusted reverse proxy in production. The image serves on port 8080 and exposes `/health`.
 
 ## Sources
 
