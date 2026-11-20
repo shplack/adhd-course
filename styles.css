@@ -368,7 +368,8 @@ input[type="radio"] {
   accent-color: #315e50;
   margin-right: 0.4rem;
 }
-.primary {
+.primary,
+.lesson-navigation button {
   border: 0;
   background: #315e50;
   color: #fff;
@@ -376,20 +377,17 @@ input[type="radio"] {
   border-radius: 0.3rem;
   font-weight: 700;
 }
-.lesson-navigation button {
-  border: 1px solid #315e50;
-  background: #fff;
-  color: #214b3f;
-  padding: 0.75rem 1rem;
-  border-radius: 0.3rem;
-  font-weight: 700;
+.lesson-navigation button:hover {
+  background: #214b3f;
 }
 .lesson-navigation #take-quiz {
-  border: 2px solid #214b3f;
-  background: #214b3f;
+  background: #5a3152;
   color: #fff;
   border-radius: 999px;
   padding: 0.75rem 1.4rem;
+}
+.lesson-navigation #take-quiz:hover {
+  background: #45253e;
 }
 .lesson-navigation {
   display: flex;

@@ -23,10 +23,17 @@ test("take quiz stands out from nearby navigation and remains keyboard accessibl
       return { backgroundColor, borderRadius };
     });
   const quizStyle = await style(quiz);
+  expect(quizStyle.backgroundColor).toBe("rgb(90, 49, 82)");
   for (const other of [previous, next]) {
     const otherStyle = await style(other);
+    expect(otherStyle.backgroundColor).toBe("rgb(49, 94, 80)");
     expect(quizStyle.backgroundColor).not.toBe(otherStyle.backgroundColor);
     expect(quizStyle.borderRadius).not.toBe(otherStyle.borderRadius);
+  }
+  for (const button of [previous, quiz, next]) {
+    const normal = (await style(button)).backgroundColor;
+    await button.hover();
+    expect((await style(button)).backgroundColor).not.toBe(normal);
   }
   await previous.focus();
   await page.keyboard.press("Tab");
