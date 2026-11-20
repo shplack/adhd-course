@@ -11,10 +11,18 @@ function tokenFromLocation() {
     : location.pathname.replace(/^\/|\/$/g, "");
 }
 
-function readLocation(focus = false) {
+function readLocation(focus = false, preserveCompleted = false) {
   const token = tokenFromLocation();
   const decoded = token ? decodeProgress(token, modules.length) : fresh();
+  const completed = state.completed;
   state = decoded || fresh();
+  if (decoded && preserveCompleted) {
+    const merged = [...new Set([...state.completed, ...completed])];
+    if (merged.length !== state.completed.length) {
+      state.completed = merged;
+      history.replaceState(null, "", resumeUrl());
+    }
+  }
   $("#invalid-link").textContent = decoded
     ? ""
     : "This resume link could not be read. You are starting a fresh course.";
@@ -25,14 +33,17 @@ function resumeUrl() {
   return `${location.origin}/${encodeProgress(state, modules.length)}`;
 }
 
-function navigate(index) {
-  state.current = index;
+function navigate(index, view) {
+  state = { current: index, completed: state.completed };
+  if (view === "quiz") state.view = view;
   history.pushState(null, "", resumeUrl());
   render(true);
 }
 
 function render(focus) {
   const module = modules[state.current];
+  const isQuiz = state.view === "quiz";
+  document.title = `${isQuiz ? `Quiz: ${module.title}` : module.title} — Alongside`;
   $("#progress-count").textContent =
     `${state.completed.length} of ${modules.length} modules completed`;
   $("#progress-bar").value = state.completed.length;
@@ -52,11 +63,16 @@ function render(focus) {
     <div class="lesson-top"><span>THE PARENT'S GUIDE TO ADULT ADHD</span><span>${String(state.current + 1).padStart(2, "0")} / ${String(modules.length).padStart(2, "0")}</span></div>
     <article>
       <p class="eyebrow"><span aria-hidden="true">✦</span> MODULE ${String(state.current + 1).padStart(2, "0")} · ${module.eyebrow}</p>
-      <h2 tabindex="-1" id="lesson-title">${module.title}</h2>
+      <h2 tabindex="-1" id="lesson-title">${isQuiz ? `Quiz: ${module.title}` : module.title}</h2>
+      ${
+        !isQuiz
+          ? `
       <p class="intro">${module.intro}</p>
       <div class="divider"></div>
       ${module.sections.map((section, index) => `<section class="lesson-section"><span class="section-number" aria-hidden="true">0${index + 1}</span><div><div class="sublesson-heading"><h3>${section.title}</h3><button class="summary-toggle" type="button" aria-label="Simple summary: ${section.title}" aria-expanded="false" aria-controls="summary-${index}">Simple summary</button></div><div class="simple-summary" id="summary-${index}" hidden><p>${section.summary}</p></div>${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}<div class="example"><h4>Example</h4><p>${section.example.scenario}</p><p>${section.example.try}</p></div></div></section>`).join("")}
       <div class="source"><span aria-hidden="true">↗</span><div><strong>GO A LITTLE DEEPER</strong><a href="${module.url}" target="_blank" rel="noopener noreferrer">External resource: ${module.source} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p>Evidence and guidance behind this lesson · opens in a new tab</p></div></div>
+      `
+          : `
       <form id="quiz" class="quiz">
         <p class="eyebrow">A MOMENT TO REFLECT</p><h3>Quick check-in</h3><p>${module.questions.length} simple questions. Take your time.</p>
         ${module.questions
@@ -72,10 +88,13 @@ function render(focus) {
         <button class="primary" type="submit">Check answers <span aria-hidden="true">→</span></button>
         <p id="quiz-result" role="status" aria-live="polite"></p>
       </form>
-      <div class="lesson-navigation">
-        ${state.current > 0 ? '<button type="button" id="previous">← Previous module</button>' : "<span></span>"}
-        ${state.current < modules.length - 1 ? '<button type="button" id="next">Next module →</button>' : "<span>That’s the course. Keep the conversation going.</span>"}
-      </div>
+      `
+      }
+      <nav class="lesson-navigation" aria-label="${isQuiz ? "Quiz navigation" : "Lesson navigation"}">
+        ${isQuiz ? '<button type="button" id="back-to-lesson">Back to lesson</button>' : state.current > 0 ? '<button type="button" id="previous">Previous module</button>' : ""}
+        ${!isQuiz ? '<button type="button" id="take-quiz">Take quiz</button>' : ""}
+        ${state.current < modules.length - 1 ? '<button type="button" id="next">Next module</button>' : ""}
+      </nav>
     </article>`;
   document
     .querySelectorAll("[data-module]")
@@ -94,7 +113,13 @@ function render(focus) {
   });
   $("#previous")?.addEventListener("click", () => navigate(state.current - 1));
   $("#next")?.addEventListener("click", () => navigate(state.current + 1));
-  $("#quiz").addEventListener("submit", (event) => {
+  $("#take-quiz")?.addEventListener("click", () =>
+    navigate(state.current, "quiz"),
+  );
+  $("#back-to-lesson")?.addEventListener("click", () =>
+    navigate(state.current),
+  );
+  $("#quiz")?.addEventListener("submit", (event) => {
     event.preventDefault();
     const answers = new FormData(event.currentTarget);
     const missing = [];
@@ -150,6 +175,6 @@ document.querySelector(".skip-link").addEventListener("click", (event) => {
   event.preventDefault();
   $("#lesson").focus();
 });
-window.addEventListener("popstate", () => readLocation(true));
+window.addEventListener("popstate", () => readLocation(true, true));
 window.addEventListener("hashchange", () => readLocation(true));
 readLocation();

@@ -14,6 +14,7 @@ function valid(state, count) {
     Number.isInteger(state?.current) &&
     state.current >= 0 &&
     state.current < count &&
+    (state.view === undefined || state.view === "quiz") &&
     Array.isArray(state.completed) &&
     new Set(state.completed).size === state.completed.length &&
     state.completed.every(
@@ -25,14 +26,15 @@ function valid(state, count) {
 export function encodeProgress(state, count) {
   if (!valid(state, count)) throw new TypeError("Invalid progress");
   const mask = state.completed.reduce((value, item) => value + 2 ** item, 0);
-  const payload = `1-${state.current.toString(36)}-${mask.toString(36)}`;
+  const version = state.view === "quiz" ? "2" : "1";
+  const payload = `${version}-${state.current.toString(36)}-${mask.toString(36)}`;
   return `${payload}-${checksum(payload)}`;
 }
 
 export function decodeProgress(token, count) {
   if (
     typeof token !== "string" ||
-    !/^1-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(token)
+    !/^[12]-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(token)
   )
     return null;
   const [version, currentText, maskText, check] = token.split("-");
@@ -51,7 +53,10 @@ export function decodeProgress(token, count) {
   const completed = Array.from({ length: count }, (_, i) => i).filter(
     (i) => Math.floor(mask / 2 ** i) % 2,
   );
-  const state = { current, completed };
+  const state =
+    version === "2"
+      ? { current, completed, view: "quiz" }
+      : { current, completed };
   return valid(state, count) && encodeProgress(state, count) === token
     ? state
     : null;

@@ -88,6 +88,19 @@ test("all modules expose accessible structure, citations, feedback and progress"
       "aria-hidden",
       "true",
     );
+    await expect(page.locator("form#quiz")).toHaveCount(0);
+    await axe(page);
+    const navigation = page.getByRole("navigation", {
+      name: "Lesson navigation",
+    });
+    await navigation.getByRole("button", { name: "Take quiz" }).click();
+    await expect(
+      page.getByRole("heading", { name: `Quiz: ${module.title}`, level: 2 }),
+    ).toBeFocused();
+    await expect(
+      page.getByRole("button", { name: "Back to lesson" }),
+    ).toBeVisible();
+    await expect(page.locator(".lesson-section")).toHaveCount(0);
     await expect(page.locator("form fieldset")).toHaveCount(
       module.questions.length,
     );
@@ -124,6 +137,10 @@ test("all modules expose accessible structure, citations, feedback and progress"
       await expect(
         page.getByRole("heading", { name: modules[index + 1].title }),
       ).toBeFocused();
+    } else {
+      await expect(
+        page.getByRole("button", { name: /next module/i }),
+      ).toHaveCount(0);
     }
   }
   const resume = new URL(page.url()).pathname;
@@ -132,8 +149,51 @@ test("all modules expose accessible structure, citations, feedback and progress"
     page.getByText(`${modules.length} of ${modules.length} modules completed`),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: modules.at(-1).title }),
+    page.getByRole("heading", { name: `Quiz: ${modules.at(-1).title}` }),
   ).toBeVisible();
+});
+
+test("quiz links can be copied, reopened, and navigated with browser history", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  const takeQuiz = page.getByRole("button", { name: "Take quiz" });
+  await takeQuiz.focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[0].title}` }),
+  ).toBeFocused();
+  await page.getByRole("button", { name: /copy my resume link/i }).click();
+  await expect(page.locator("#copy-message")).toContainText("copied");
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toBe(page.url());
+  await page.goBack();
+  await expect(
+    page.getByRole("heading", { name: modules[0].title, exact: true }),
+  ).toBeFocused();
+  await page.goForward();
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[0].title}` }),
+  ).toBeFocused();
+  await page.goto(copied);
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[0].title}` }),
+  ).toBeVisible();
+  await answerQuiz(page, modules[0]);
+  await expect(
+    page.getByText(`1 of ${modules.length} modules completed`),
+  ).toBeVisible();
+  await page.goBack();
+  await expect(
+    page.getByText(`1 of ${modules.length} modules completed`),
+  ).toBeVisible();
+  await page.goForward();
+  await page.getByRole("button", { name: "Back to lesson" }).click();
+  await expect(
+    page.getByRole("heading", { name: modules[0].title, exact: true }),
+  ).toBeFocused();
 });
 
 test("summary is keyboard operable and available on touch screens", async ({

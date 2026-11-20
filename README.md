@@ -1,6 +1,6 @@
 # Alongside
 
-A short, research-informed course for parents and caregivers of adults with ADHD. It is educational, not medical advice. Each module links to its own peer-reviewed research source and ends with three questions; all must be answered correctly to complete it.
+A short, research-informed course for parents and caregivers of adults with ADHD. It is educational, not medical advice. Each module links to its own peer-reviewed research source and a separate quiz with three questions; all must be answered correctly to complete it.
 
 ## Run locally
 
@@ -8,7 +8,7 @@ Install Node.js, then run `npm ci` and `npm run serve`. Visit <http://127.0.0.1:
 
 ## Progress and privacy
 
-Copy the resume link after navigating or completing a quiz; an older saved link retains its older progress. Links work as `/<token>` or `/#<token>` and do not require an account or server-side storage. The token contains only a module number and completion flags, not names or quiz answers. It is not secret, encrypted, or tamper-proof: anyone holding a link can inspect or change it. URLs may appear in browser history, logs, or messages, so share carefully. Invalid links start a fresh course with a message. Deploy at the domain root with a fallback to `index.html`.
+Copy the resume link after navigating or completing a quiz; an older saved link retains its older progress. Links work as `/<token>` or `/#<token>` and do not require an account or server-side storage. The token contains only a module number, whether the quiz is open, and completion flags, not names or quiz answers. Unsubmitted answers are not saved. It is not secret, encrypted, or tamper-proof: anyone holding a link can inspect or change it. URLs may appear in browser history, logs, or messages, so share carefully. Invalid links start a fresh course with a message. Deploy at the domain root with a fallback to `index.html`.
 
 ## Checks
 
