@@ -13,3 +13,4 @@
 - [x] Development watch command that refreshes the browser when site files change, with a configurable port.
 - [x] Docker Compose watch rebuilds the container when site or server files change.
 - [x] Non-root static container with a read-only filesystem example and security headers.
+- [x] GitHub Actions builds and publishes multi-platform container images to GHCR.

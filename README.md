@@ -14,11 +14,20 @@ Copy the resume link after navigating or completing a quiz; an older saved link 
 
 ## Checks
 
-Run `npx playwright install chromium` once and `npm test` for unit, keyboard, screen-reader-facing role/name, and axe accessibility checks across modules and feedback states. `npm run format` formats files; `npm run check` checks formatting and JavaScript syntax. Install the real pre-commit framework (for example with `uvx pre-commit install`) and run `uvx pre-commit run --all-files`. The hooks require Node, `npm ci` dependencies, Docker for hadolint, and network access for the initial tool downloads. Automated checks do not replace testing with a screen reader.
+Run `npx playwright install chromium` once and `npm test` for unit, keyboard, screen-reader-facing role/name, and axe accessibility checks across modules and feedback states. `npm run format` formats files; `npm run check` checks formatting and JavaScript syntax. Install the real pre-commit framework (for example with `uvx pre-commit install`) and run `uvx pre-commit run --all-files`. The hooks require Node, `npm ci` dependencies, Docker for hadolint and actionlint, and network access for the initial tool downloads. Automated checks do not replace testing with a screen reader.
 
 ## Docker
 
 Run `docker compose up --build` and visit <http://127.0.0.1:8080>. For Docker development, `docker compose watch` rebuilds and restarts the container when site files, `nginx.conf`, or the Dockerfile change. It does not refresh the browser automatically; reload the page yourself. For automatic browser refresh without rebuilding, use `npm run watch` instead. The example runs unprivileged with a read-only root filesystem, a temporary writable `/tmp`, all capabilities dropped, and no new privileges. Alternatively: `docker build -t alongside .` then `docker run --rm -p 127.0.0.1:8080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges alongside`. Terminate TLS at a trusted reverse proxy in production. The image serves on port 8080 and exposes `/health`.
+
+The GitHub workflow publishes `ghcr.io/shplack/adhd-course:latest` for amd64 and arm64 on pushes to `main`. Pull requests build without publishing; version tags also produce version and commit-SHA image tags. To run the published image:
+
+```sh
+docker pull ghcr.io/shplack/adhd-course:latest
+docker run --rm -p 127.0.0.1:8080:8080 --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges ghcr.io/shplack/adhd-course:latest
+```
+
+For production, pin the image by digest. Anonymous pulls require the package's GitHub visibility to be public.
 
 ## Sources
 

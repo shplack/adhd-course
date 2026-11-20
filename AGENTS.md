@@ -10,7 +10,8 @@
 - Each sublesson also has a separately written `summary` in plain adult language. Its disclosure is available on hover, keyboard focus, and touch; do not replace the original lesson.
 - The header's dark mode toggle defaults to light and stores its choice in local storage, separately from resume tokens. Keep both themes accessible.
 - Maintain keyboard behavior, semantic markup, visible focus, live feedback, and accessible names. Run `npm test` and test with real assistive technology when possible. Automated checks do not replace manual review.
-- Run `npm ci`, `npx playwright install chromium`, `npm test`, and `uvx pre-commit run --all-files`; install hooks using `uvx pre-commit install`. Hooks require Docker for hadolint and network access to obtain their pinned tools initially.
+- Run `npm ci`, `npx playwright install chromium`, `npm test`, and `uvx pre-commit run --all-files`; install hooks using `uvx pre-commit install`. Hooks require Docker for hadolint and actionlint and network access to obtain their pinned tools initially.
 - Format with `npm run format`. `npm run serve` and `npm run watch` (with browser live reload for site files) are development servers only. Use `npm run watch -- --port 4174` or the `PORT` environment variable to avoid port conflicts; use the hardened nginx image for distribution.
 - `docker compose watch` rebuilds and restarts the hardened container when site files, `nginx.conf`, or the Dockerfile change; refresh the browser manually.
+- `.github/workflows/publish.yml` builds pull requests and publishes amd64/arm64 images to GHCR on pushes to `main` and version tags. Keep action pins current and validate changes with actionlint.
 - Before adding modules, consider the 30-module bitset limit and backward compatibility of existing links.
