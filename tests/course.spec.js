@@ -5,6 +5,42 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("take quiz stands out from nearby navigation and remains keyboard accessible", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Course modules" })
+    .getByRole("button", { name: /support without taking over/i })
+    .click();
+  const nav = page.getByRole("navigation", { name: "Lesson navigation" });
+  const quiz = nav.getByRole("button", { name: "Take quiz" });
+  const previous = nav.getByRole("button", { name: "Previous module" });
+  const next = nav.getByRole("button", { name: "Next module" });
+  const style = (locator) =>
+    locator.evaluate((element) => {
+      const { backgroundColor, borderRadius } = getComputedStyle(element);
+      return { backgroundColor, borderRadius };
+    });
+  const quizStyle = await style(quiz);
+  for (const other of [previous, next]) {
+    const otherStyle = await style(other);
+    expect(quizStyle.backgroundColor).not.toBe(otherStyle.backgroundColor);
+    expect(quizStyle.borderRadius).not.toBe(otherStyle.borderRadius);
+  }
+  await previous.focus();
+  await page.keyboard.press("Tab");
+  await expect(quiz).toBeFocused();
+  expect(
+    await quiz.evaluate((element) => getComputedStyle(element).outlineStyle),
+  ).not.toBe("none");
+  await axe(page);
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: /quiz: support without taking over/i }),
+  ).toBeFocused();
+});
+
 async function axe(page) {
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 }
