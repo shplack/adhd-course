@@ -5,6 +5,129 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("unfinished lessons and quizzes remind pointer users before continuing", async ({
+  page,
+}) => {
+  for (const view of ["lesson", "quiz"]) {
+    const token = encodeProgress(
+      { current: 0, completed: [], ...(view === "quiz" ? { view } : {}) },
+      modules.length,
+    );
+    await page.goto(`/${token}`);
+    const next = page.getByRole("button", { name: "Next module" });
+    const reminder = page.locator("#quiz-reminder");
+    const before = page.url();
+    await next.click();
+    expect(page.url()).toBe(before);
+    await expect(reminder).toBeVisible();
+    await expect(reminder).toHaveAttribute("aria-hidden", "true");
+    await expect(reminder).toContainText(/quiz/i);
+    await expect(reminder).toContainText(/again.*continue/i);
+    await axe(page);
+    await next.click();
+    await expect(
+      page.getByRole("heading", { name: modules[1].title, level: 2 }),
+    ).toBeVisible();
+    await expect(reminder).toBeHidden();
+  }
+});
+
+test("reminders reset and keyboard or virtual clicks skip them", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const next = page.getByRole("button", { name: "Next module" });
+  const reminder = page.locator("#quiz-reminder");
+  await next.click();
+  await expect(reminder).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(reminder).toBeHidden();
+  await next.click();
+  await expect(reminder).toBeVisible();
+  await page.getByRole("button", { name: "Take quiz" }).click();
+  await expect(reminder).toBeHidden();
+  await next.click();
+  await expect(reminder).toBeVisible();
+  await page.getByRole("button", { name: "Back to lesson" }).click();
+  await expect(reminder).toBeHidden();
+  await next.click();
+  await expect(reminder).toBeVisible();
+  await next.focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: modules[1].title, level: 2 }),
+  ).toBeVisible();
+  await expect(reminder).toBeHidden();
+  await next.focus();
+  await page.keyboard.press("Space");
+  await expect(
+    page.getByRole("heading", { name: modules[2].title, level: 2 }),
+  ).toBeVisible();
+  await next.evaluate((element) => element.click());
+  await expect(
+    page.getByRole("heading", { name: modules[3].title, level: 2 }),
+  ).toBeVisible();
+  await expect(next).toHaveCount(0);
+});
+
+test("completed modules skip the reminder", async ({ page }) => {
+  for (const view of ["lesson", "quiz"]) {
+    const token = encodeProgress(
+      { current: 0, completed: [0], ...(view === "quiz" ? { view } : {}) },
+      modules.length,
+    );
+    await page.goto(`/${token}`);
+    await page.getByRole("button", { name: "Next module" }).click();
+    await expect(
+      page.getByRole("heading", { name: modules[1].title, level: 2 }),
+    ).toBeVisible();
+  }
+});
+
+test("touch users can continue after the reminder", async ({ browser }) => {
+  const context = await browser.newContext({
+    baseURL: process.env.COURSE_BASE_URL || "http://127.0.0.1:4173",
+    hasTouch: true,
+    viewport: { width: 320, height: 800 },
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto("/");
+    const next = page.getByRole("button", { name: "Next module" });
+    await next.tap();
+    await expect(page.locator("#quiz-reminder")).toBeVisible();
+    await next.tap();
+    await expect(
+      page.getByRole("heading", { name: modules[1].title, level: 2 }),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});
+
+test("quiz reminder fits narrow dark screens and respects reduced motion", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Dark mode" }).click();
+  const next = page.getByRole("button", { name: "Next module" });
+  await next.click();
+  const reminder = page.locator("#quiz-reminder");
+  await expect(reminder).toBeVisible();
+  const box = await reminder.boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(320);
+  expect(
+    await next.evaluate((element) => getComputedStyle(element).animationName),
+  ).toBe("none");
+  expect(
+    await next.evaluate((element) => getComputedStyle(element).boxShadow),
+  ).not.toBe("none");
+  await axe(page);
+});
+
 test("branding and footer remain accessible in both themes on narrow screens", async ({
   page,
 }) => {

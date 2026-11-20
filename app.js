@@ -137,7 +137,7 @@ function render(focus) {
             : `
         ${isQuiz ? '<button type="button" id="back-to-lesson">Back to lesson</button>' : state.current > 0 ? '<button type="button" id="previous">Previous module</button>' : ""}
         ${!isQuiz ? '<button type="button" id="take-quiz">Take quiz</button>' : ""}
-        ${state.current < modules.length - 1 ? '<button type="button" id="next">Next module</button>' : ""}
+        ${state.current < modules.length - 1 ? '<span class="next-control"><button type="button" id="next">Next module</button><span id="quiz-reminder" class="quiz-reminder" aria-hidden="true" hidden>Quiz not completed yet. Click again to continue.</span></span>' : ""}
         <button type="button" id="view-diploma" ${complete || state.current === modules.length - 1 ? "" : "hidden"}>View diploma</button>
         `
         }
@@ -159,7 +159,21 @@ function render(focus) {
     });
   });
   $("#previous")?.addEventListener("click", () => navigate(state.current - 1));
-  $("#next")?.addEventListener("click", () => navigate(state.current + 1));
+  $("#next")?.addEventListener("click", (event) => {
+    const reminder = $("#quiz-reminder");
+    if (
+      !state.completed.includes(state.current) &&
+      event.isTrusted &&
+      event.detail > 0 &&
+      event.pointerType &&
+      reminder.hidden
+    ) {
+      reminder.hidden = false;
+      event.currentTarget.classList.add("quiz-nudge");
+      return;
+    }
+    navigate(state.current + 1);
+  });
   $("#take-quiz")?.addEventListener("click", () =>
     navigate(state.current, "quiz"),
   );
@@ -230,6 +244,12 @@ $("#copy-link").addEventListener("click", async () => {
 document.querySelector(".skip-link").addEventListener("click", (event) => {
   event.preventDefault();
   $("#lesson").focus();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && $("#quiz-reminder")) {
+    $("#quiz-reminder").hidden = true;
+    $("#next").classList.remove("quiz-nudge");
+  }
 });
 window.addEventListener("popstate", () => readLocation(true, true));
 window.addEventListener("hashchange", () => readLocation(true));
