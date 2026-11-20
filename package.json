@@ -7,6 +7,7 @@
     "test": "npm run test:unit && playwright test",
     "test:unit": "node --test tests/progress.test.js tests/course-data.test.js",
     "serve": "node scripts/serve.js",
+    "watch": "node scripts/serve.js --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "node --check app.js && node --check progress.js && node --check course.js && npm run format:check"
