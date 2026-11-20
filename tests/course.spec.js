@@ -5,6 +5,44 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("branding and footer remain accessible in both themes on narrow screens", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/");
+  const home = page.getByRole("link", { name: "ADHD for parents" });
+  const footer = page.getByRole("contentinfo");
+  const github = footer.getByRole("link", {
+    name: "View the course on GitHub",
+  });
+  await expect(home).toHaveAttribute("href", "/");
+  await expect(home).toContainText("🎓");
+  await expect(home.locator('[aria-hidden="true"]')).toHaveText("🎓");
+  await expect(footer).toContainText("Created by Alexander Hedberg");
+  await expect(footer).toContainText("not medical advice");
+  await expect(github).toHaveAttribute(
+    "href",
+    "https://github.com/shplack/adhd-course",
+  );
+  for (const mode of ["light", "dark"]) {
+    if (mode === "dark")
+      await page.getByRole("button", { name: "Dark mode" }).click();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(320);
+    await github.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(github).toBeFocused();
+    expect(
+      await github.evaluate(
+        (element) => getComputedStyle(element).outlineStyle,
+      ),
+    ).not.toBe("none");
+    await axe(page);
+  }
+});
+
 test("theme button names the next mode and describes the current mode", async ({
   page,
 }) => {
