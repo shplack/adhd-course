@@ -41,6 +41,7 @@ test("each sublesson has several paragraphs and a substantial labelled example",
         ...section.paragraphs,
         section.example.scenario,
         section.example.try,
+        section.example.avoid || "",
       ]
         .join(" ")
         .trim()
@@ -50,6 +51,17 @@ test("each sublesson has several paragraphs and a substantial labelled example",
         `${module.title}: ${section.title} has ${words} words`,
       );
     }
+  }
+});
+
+test("each module has one concise example of what not to do", () => {
+  for (const module of modules) {
+    const examples = module.sections.filter(
+      (section) => section.example?.avoid,
+    );
+    assert.equal(examples.length, 1, module.title);
+    assert.ok(examples[0].example.avoid.trim(), module.title);
+    assert.ok(examples[0].example.avoid.trim().split(/\s+/).length <= 35);
   }
 });
 

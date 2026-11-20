@@ -255,6 +255,14 @@ test("all modules expose accessible structure, citations, feedback and progress"
       await expect(
         sublesson.getByText(section.example.try, { exact: true }),
       ).toBeVisible();
+      if (section.example.avoid) {
+        const example = sublesson.locator(".example");
+        await expect(
+          example.getByText("What not to do:", { exact: false }),
+        ).toBeVisible();
+        await expect(example).toContainText(section.example.avoid);
+        await expect(example).toContainText(section.example.try);
+      }
       await sublesson.getByText(section.paragraphs[0], { exact: true }).hover();
       const summaryButton = sublesson.getByRole("button", {
         name: `Simple summary: ${section.title}`,

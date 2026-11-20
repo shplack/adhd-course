@@ -7,6 +7,7 @@
 - Keep each module's citation verifiable, clearly external, and relevant to its claims. Avoid presenting practical suggestions as proven treatments.
 - Modules have three to five questions in `questions`, each with `prompt`, `options`, and a zero-based `answer`. All must be correct to complete the module. Research links must be distinct and include authors, year, title, and journal; preserve study limitations.
 - Each sublesson in `sections` has a `title`, at least three `paragraphs`, and an `example` with `scenario` and `try` text. Keep each sublesson 250–400 words, including its example, and frame suggestions as suggestions rather than proven treatment.
+- Each module has one `example.avoid` paired with its existing scenario and suggested approach; keep it respectful and non-shaming.
 - Each sublesson also has a separately written `summary` in plain adult language. Its disclosure is available on hover, keyboard focus, and touch; do not replace the original lesson.
 - The header's dark mode toggle defaults to light and stores its choice in local storage, separately from resume tokens. Keep both themes accessible.
 - Maintain keyboard behavior, semantic markup, visible focus, live feedback, and accessible names. Run `npm test` and test with real assistive technology when possible. Automated checks do not replace manual review.

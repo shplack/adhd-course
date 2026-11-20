@@ -20,6 +20,8 @@ export const modules = [
           scenario:
             "What this might look like: Sam wants to renew a document but keeps putting it off. Their parent sees an unfinished form and worries Sam is not taking the deadline seriously. Sam says the instructions and several required steps feel hard to sort through.",
           try: "What you could try: Ask, “Would it help to look at the first step together, or would you rather handle it yourself?” If Sam welcomes help, let them choose which part to tackle. If not, respect that choice and avoid turning the offer into a demand.",
+          avoid:
+            "Avoid telling Sam they simply do not care about the deadline before asking what is difficult.",
         },
       },
       {
@@ -111,6 +113,8 @@ export const modules = [
           scenario:
             "What this might look like: Maya tells her dad that a work project is stressful. He has several ideas about organizing it and starts to offer them. Maya looks quiet and says she has already received a lot of advice from other people.",
           try: "What you could try: Her dad could pause and ask, “Would listening be more helpful right now?” If Maya says yes, he can listen without building a plan. At another time, she can choose whether to ask him for ideas or involve someone else.",
+          avoid:
+            "Avoid making a plan for Maya after she has said she does not want more advice.",
         },
       },
       {
@@ -202,6 +206,8 @@ export const modules = [
           scenario:
             "What this might look like: Devon wants to arrange a dentist visit but feels stuck when looking at several clinic websites. Devon asks a parent to sit nearby while they work out what to do. The parent notices the task has become “find the perfect clinic” rather than one manageable action.",
           try: "What you could try: Ask Devon to choose a first step, such as writing down the number of one clinic. If Devon wants, they can add a second step later. Let Devon decide whether to call, make a note, take a break, or stop for now.",
+          avoid:
+            "Avoid choosing every step for Devon and checking their progress without asking.",
         },
       },
       {
@@ -293,6 +299,8 @@ export const modules = [
           scenario:
             "What this might look like: Jordan is considering an appointment to discuss ADHD care. A parent has read that one medicine helped many people in a study and wants Jordan to request it. Jordan is unsure and has questions about side effects and other health needs.",
           try: "What you could try: Say, “Would you like help writing down your questions for the clinician?” If Jordan agrees, help capture the questions without choosing the answer. Jordan and the clinician can discuss the options and decide what, if anything, fits.",
+          avoid:
+            "Avoid deciding which treatment Jordan should use or pressuring them to choose it.",
         },
       },
       {
