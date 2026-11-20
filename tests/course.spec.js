@@ -5,19 +5,46 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("theme button names the next mode and describes the current mode", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const toggle = page.locator("#theme-toggle");
+  await expect(toggle).toHaveText("Dark mode");
+  await expect(toggle).toHaveAccessibleName("Dark mode");
+  await expect(toggle).toHaveAccessibleDescription("Dark mode is off.");
+  await expect(toggle).not.toHaveAttribute("aria-pressed");
+
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await expect(toggle).toHaveText("Light mode");
+  await expect(toggle).toHaveAccessibleName("Light mode");
+  await expect(toggle).toHaveAccessibleDescription("Dark mode is on.");
+  await page.reload();
+  await expect(toggle).toHaveAccessibleName("Light mode");
+  await expect(toggle).toHaveAccessibleDescription("Dark mode is on.");
+
+  await toggle.click();
+  await expect(toggle).toHaveAccessibleName("Dark mode");
+  await expect(toggle).toHaveAccessibleDescription("Dark mode is off.");
+  await page.reload();
+  await expect(toggle).toHaveAccessibleName("Dark mode");
+  await expect(toggle).toHaveAccessibleDescription("Dark mode is off.");
+});
+
 test("dark mode is accessible, independent of progress, and remembers a choice", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
-  const toggle = page.getByRole("button", { name: "Dark mode" });
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  const toggle = page.locator("#theme-toggle");
+  await expect(toggle).toHaveAccessibleName("Dark mode");
   await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
   const resumeLink = await page.getByLabel("Your resume link").inputValue();
 
   await toggle.focus();
   await page.keyboard.press("Space");
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(toggle).toHaveAccessibleName("Light mode");
   await expect(page.getByRole("status")).toHaveText("Dark mode on.");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   expect(await page.getByLabel("Your resume link").inputValue()).toBe(
@@ -63,13 +90,13 @@ test("dark mode is accessible, independent of progress, and remembers a choice",
     await axe(page);
   }
   await page.reload();
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(toggle).toHaveAccessibleName("Light mode");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(toggle).toHaveAccessibleName("Dark mode");
   await expect(page.getByRole("status").first()).toHaveText("Dark mode off.");
   await page.reload();
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(toggle).toHaveAccessibleName("Dark mode");
   await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
 });
 
@@ -87,9 +114,9 @@ test("dark mode remains usable when browser storage is unavailable", async ({
   await expect(page.getByRole("status")).toHaveText(
     "Your theme preference could not be loaded.",
   );
-  const toggle = page.getByRole("button", { name: "Dark mode" });
+  const toggle = page.locator("#theme-toggle");
   await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(toggle).toHaveAccessibleName("Light mode");
   await expect(page.getByRole("status")).toHaveText(
     "Dark mode on. Your choice could not be saved in this browser.",
   );

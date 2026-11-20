@@ -9,7 +9,8 @@ const themeToggle = $("#theme-toggle");
 const themeStatus = $("#theme-status");
 function setTheme(dark) {
   document.documentElement.dataset.theme = dark ? "dark" : "light";
-  themeToggle.setAttribute("aria-pressed", String(dark));
+  themeToggle.textContent = dark ? "Light mode" : "Dark mode";
+  $("#theme-state").textContent = `Dark mode is ${dark ? "on" : "off"}.`;
 }
 try {
   setTheme(localStorage.getItem("alongside-theme") === "dark");
@@ -19,7 +20,7 @@ try {
 }
 themeToggle.hidden = false;
 themeToggle.addEventListener("click", () => {
-  const dark = themeToggle.getAttribute("aria-pressed") !== "true";
+  const dark = document.documentElement.dataset.theme !== "dark";
   setTheme(dark);
   const message = `Dark mode ${dark ? "on" : "off"}.`;
   try {
