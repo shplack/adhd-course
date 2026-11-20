@@ -2,7 +2,7 @@
 
 - Make a local commit after every task; do not push unless requested.
 - This is a dependency-light static site. Course data is in `course.js`; rendering and navigation are in `app.js`; resume serialization is in `progress.js`.
-- The resume token is versioned and checksummed, not encrypted or authenticated. Version 1 stores the current module and completion bitset; version 2 identifies its quiz view as well. Anyone with the link can read and modify progress. Preserve old version decoding when changing the format or module order.
+- The resume token is versioned and checksummed, not encrypted or authenticated. Version 1 stores the current module and completion bitset; version 2 identifies its quiz view and version 3 its diploma view. Anyone with the link can read and modify progress. Preserve old version decoding when changing the format or module order.
 - Path links require a server fallback to `index.html`; nginx and the local development server provide one. Assets use root-relative URLs, so deploy at the domain root.
 - Keep each module's citation verifiable, clearly external, and relevant to its claims. Avoid presenting practical suggestions as proven treatments.
 - Modules have three to five questions in `questions`, each with `prompt`, `options`, and a zero-based `answer`. All must be correct to complete the module. Research links must be distinct and include authors, year, title, and journal; preserve study limitations.

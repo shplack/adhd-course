@@ -35,7 +35,7 @@ function resumeUrl() {
 
 function navigate(index, view) {
   state = { current: index, completed: state.completed };
-  if (view === "quiz") state.view = view;
+  if (view === "quiz" || view === "diploma") state.view = view;
   history.pushState(null, "", resumeUrl());
   render(true);
 }
@@ -43,7 +43,17 @@ function navigate(index, view) {
 function render(focus) {
   const module = modules[state.current];
   const isQuiz = state.view === "quiz";
-  document.title = `${isQuiz ? `Quiz: ${module.title}` : module.title} — Alongside`;
+  const isDiploma = state.view === "diploma";
+  const complete = state.completed.length === modules.length;
+  const nextUnfinished = modules.findIndex(
+    (_, index) => !state.completed.includes(index),
+  );
+  const title = isDiploma
+    ? "Your diploma"
+    : isQuiz
+      ? `Quiz: ${module.title}`
+      : module.title;
+  document.title = `${title} — Alongside`;
   $("#progress-count").textContent =
     `${state.completed.length} of ${modules.length} modules completed`;
   $("#progress-bar").value = state.completed.length;
@@ -62,17 +72,21 @@ function render(focus) {
   $("#content").innerHTML = `
     <div class="lesson-top"><span>THE PARENT'S GUIDE TO ADULT ADHD</span><span>${String(state.current + 1).padStart(2, "0")} / ${String(modules.length).padStart(2, "0")}</span></div>
     <article>
-      <p class="eyebrow"><span aria-hidden="true">✦</span> MODULE ${String(state.current + 1).padStart(2, "0")} · ${module.eyebrow}</p>
-      <h2 tabindex="-1" id="lesson-title">${isQuiz ? `Quiz: ${module.title}` : module.title}</h2>
+      <p class="eyebrow"><span aria-hidden="true">✦</span> ${isDiploma ? "YOUR COURSE" : `MODULE ${String(state.current + 1).padStart(2, "0")} · ${module.eyebrow}`}</p>
+      <h2 tabindex="-1" id="lesson-title">${title}</h2>
       ${
-        !isQuiz
-          ? `
+        isDiploma
+          ? complete
+            ? `<section class="diploma"><h3>Course completed</h3><p>You completed all ${modules.length} quizzes. Thank you for taking the time to learn and listen.</p><p><strong>Your pretend course password:</strong> One more tab…</p><p>Just for fun — this is not a real password or credential.</p></section>`
+            : `<section class="diploma"><h3>Not quite there yet</h3><p>Complete all ${modules.length} quizzes to unlock your diploma. You have completed ${state.completed.length} of ${modules.length}.</p><p>Your next unfinished quiz is ${modules[nextUnfinished].title}.</p><button class="primary" type="button" id="unfinished">Go to next unfinished quiz: ${modules[nextUnfinished].title}</button></section>`
+          : !isQuiz
+            ? `
       <p class="intro">${module.intro}</p>
       <div class="divider"></div>
       ${module.sections.map((section, index) => `<section class="lesson-section"><span class="section-number" aria-hidden="true">0${index + 1}</span><div><div class="sublesson-heading"><h3>${section.title}</h3><button class="summary-toggle" type="button" aria-label="Simple summary: ${section.title}" aria-expanded="false" aria-controls="summary-${index}">Simple summary</button></div><div class="simple-summary" id="summary-${index}" hidden><p>${section.summary}</p></div>${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}<div class="example"><h4>Example</h4><p>${section.example.scenario}</p><p>${section.example.try}</p></div></div></section>`).join("")}
       <div class="source"><span aria-hidden="true">↗</span><div><strong>GO A LITTLE DEEPER</strong><a href="${module.url}" target="_blank" rel="noopener noreferrer">External resource: ${module.source} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p>Evidence and guidance behind this lesson · opens in a new tab</p></div></div>
       `
-          : `
+            : `
       <form id="quiz" class="quiz">
         <p class="eyebrow">A MOMENT TO REFLECT</p><h3>Quick check-in</h3><p>${module.questions.length} simple questions. Take your time.</p>
         ${module.questions
@@ -90,10 +104,17 @@ function render(focus) {
       </form>
       `
       }
-      <nav class="lesson-navigation" aria-label="${isQuiz ? "Quiz navigation" : "Lesson navigation"}">
+      <nav class="lesson-navigation" aria-label="${isDiploma ? "Diploma navigation" : isQuiz ? "Quiz navigation" : "Lesson navigation"}">
+        ${
+          isDiploma
+            ? '<button type="button" id="back-to-lesson">Back to lesson</button>'
+            : `
         ${isQuiz ? '<button type="button" id="back-to-lesson">Back to lesson</button>' : state.current > 0 ? '<button type="button" id="previous">Previous module</button>' : ""}
         ${!isQuiz ? '<button type="button" id="take-quiz">Take quiz</button>' : ""}
         ${state.current < modules.length - 1 ? '<button type="button" id="next">Next module</button>' : ""}
+        <button type="button" id="view-diploma" ${complete || state.current === modules.length - 1 ? "" : "hidden"}>View diploma</button>
+        `
+        }
       </nav>
     </article>`;
   document
@@ -118,6 +139,12 @@ function render(focus) {
   );
   $("#back-to-lesson")?.addEventListener("click", () =>
     navigate(state.current),
+  );
+  $("#view-diploma")?.addEventListener("click", () =>
+    navigate(state.current, "diploma"),
+  );
+  $("#unfinished")?.addEventListener("click", () =>
+    navigate(nextUnfinished, "quiz"),
   );
   $("#quiz")?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -153,8 +180,11 @@ function render(focus) {
       );
       currentButton.querySelector(".module-number").textContent = "✓";
       currentButton.querySelector(".sr-only").textContent = "Completed";
-      $("#quiz-result").textContent =
-        "That’s right! Module completed. Your resume link has been updated.";
+      const allComplete = state.completed.length === modules.length;
+      if (allComplete) $("#view-diploma").hidden = false;
+      $("#quiz-result").textContent = allComplete
+        ? "That’s right! Module completed. Your diploma is ready. Your resume link has been updated."
+        : "That’s right! Module completed. Your resume link has been updated.";
     }
   });
   if (focus) $("#lesson-title").focus();

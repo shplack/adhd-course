@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { modules } from "../course.js";
+import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
@@ -194,6 +195,79 @@ test("quiz links can be copied, reopened, and navigated with browser history", a
   await expect(
     page.getByRole("heading", { name: modules[0].title, exact: true }),
   ).toBeFocused();
+});
+
+test("diploma stays locked when quizzes are skipped and points to the next unfinished quiz", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Course modules" })
+    .getByRole("button", {
+      name: /care, treatment and next steps.*not completed/i,
+    })
+    .click();
+  await page.getByRole("button", { name: "View diploma" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your diploma" }),
+  ).toBeFocused();
+  await expect(page.getByText(/complete all 4 quizzes/i)).toBeVisible();
+  await expect(page.getByText(/one more tab/i)).toHaveCount(0);
+  await axe(page);
+  await page.getByRole("button", { name: /next unfinished quiz/i }).click();
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[0].title}` }),
+  ).toBeFocused();
+});
+
+test("completing the last outstanding quiz unlocks the diploma and survives resume", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const index of [3, 0, 2]) {
+    await page
+      .getByRole("navigation", { name: "Course modules" })
+      .getByRole("button", {
+        name: new RegExp(`${modules[index].title}.*Not completed`, "i"),
+      })
+      .click();
+    await page.getByRole("button", { name: "Take quiz" }).click();
+    await answerQuiz(page, modules[index]);
+    await expect(page.getByRole("status")).not.toContainText(/diploma.*ready/i);
+  }
+  const partialResume = page.url();
+  await page.goto(partialResume);
+  await page
+    .getByRole("navigation", { name: "Course modules" })
+    .getByRole("button", {
+      name: /support without taking over.*not completed/i,
+    })
+    .click();
+  await page.getByRole("button", { name: "Take quiz" }).click();
+  await answerQuiz(page, modules[1]);
+  await expect(page.getByRole("status")).toContainText(/diploma.*ready/i);
+  const view = page.getByRole("button", { name: "View diploma" });
+  await view.focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: "Your diploma" }),
+  ).toBeFocused();
+  await expect(page.getByText(/one more tab/i)).toBeVisible();
+  await expect(page.getByText(/not a real password/i)).toBeVisible();
+  await axe(page);
+  const resume = new URL(page.url()).pathname;
+  await page.goto(resume);
+  await expect(
+    page.getByRole("heading", { name: "Your diploma" }),
+  ).toBeVisible();
+  await expect(page.getByText(/one more tab/i)).toBeVisible();
+  const oldLink = encodeProgress(
+    { current: 0, completed: [0, 1, 2, 3] },
+    modules.length,
+  );
+  await page.goto(`/${oldLink}`);
+  await page.getByRole("button", { name: "View diploma" }).click();
+  await expect(page.getByText(/one more tab/i)).toBeVisible();
 });
 
 test("summary is keyboard operable and available on touch screens", async ({

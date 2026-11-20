@@ -16,7 +16,14 @@ test("quiz resume links preserve the view and old lesson links still decode", ()
     current: 2,
     completed: [0, 1],
   });
-  assert.equal(decodeProgress(token.replace(/^2/, "3"), 4), null);
+  assert.equal(decodeProgress(token.replace(/^2/, "4"), 4), null);
+});
+
+test("diploma links preserve the view and completion state", () => {
+  const state = { current: 1, completed: [0, 1, 2, 3], view: "diploma" };
+  const token = encodeProgress(state, 4);
+  assert.match(token, /^3-/);
+  assert.deepEqual(decodeProgress(token, 4), state);
 });
 
 test("rejects invalid, tampered, and future-version tokens", () => {
