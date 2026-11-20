@@ -42,6 +42,20 @@ test("all modules expose accessible structure, citations, feedback and progress"
       .evaluateAll((nodes) => nodes.map((node) => node.tagName));
     expect(headings[0]).toBe("H2");
     expect(headings.slice(1).every((heading) => heading === "H3")).toBe(true);
+    for (const section of module.sections) {
+      const sublesson = page.locator("section.lesson-section").filter({
+        has: page.getByRole("heading", { name: section.title, level: 3 }),
+      });
+      await expect(
+        sublesson.getByRole("heading", { name: "Example", level: 4 }),
+      ).toBeVisible();
+      await expect(
+        sublesson.getByText(section.example.scenario, { exact: true }),
+      ).toBeVisible();
+      await expect(
+        sublesson.getByText(section.example.try, { exact: true }),
+      ).toBeVisible();
+    }
     const citation = page.getByRole("link", {
       name: /external resource.*opens in a new tab/i,
     });

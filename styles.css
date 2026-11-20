@@ -258,6 +258,22 @@ h3 {
   margin: 0;
   color: #4a6056;
 }
+.lesson-section p + p {
+  margin-top: 1rem;
+}
+.example {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #bacbbd;
+  border-left: 4px solid #527d6d;
+  border-radius: 0.3rem;
+  background: #edf3ec;
+}
+.example h4 {
+  margin: 0 0 0.5rem;
+  color: #193d35;
+  font-size: 1rem;
+}
 .source {
   display: flex;
   gap: 1rem;

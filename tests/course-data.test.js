@@ -3,6 +3,40 @@ import assert from "node:assert/strict";
 import { modules } from "../course.js";
 import { decodeProgress } from "../progress.js";
 
+test("each sublesson has several paragraphs and a substantial labelled example", () => {
+  for (const module of modules) {
+    for (const section of module.sections) {
+      assert.ok(section.title, module.title);
+      assert.ok(
+        Array.isArray(section.paragraphs) && section.paragraphs.length >= 3,
+        section.title,
+      );
+      assert.ok(
+        section.paragraphs.every(
+          (paragraph) => typeof paragraph === "string" && paragraph.trim(),
+        ),
+        section.title,
+      );
+      assert.ok(
+        section.example?.scenario?.trim() && section.example?.try?.trim(),
+        section.title,
+      );
+      const words = [
+        ...section.paragraphs,
+        section.example.scenario,
+        section.example.try,
+      ]
+        .join(" ")
+        .trim()
+        .split(/\s+/).length;
+      assert.ok(
+        words >= 250 && words <= 400,
+        `${module.title}: ${section.title} has ${words} words`,
+      );
+    }
+  }
+});
+
 test("each module has a distinct research citation and three to five valid questions", () => {
   const urls = new Set();
   for (const module of modules) {

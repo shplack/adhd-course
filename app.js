@@ -55,7 +55,7 @@ function render(focus) {
       <h2 tabindex="-1" id="lesson-title">${module.title}</h2>
       <p class="intro">${module.intro}</p>
       <div class="divider"></div>
-      ${module.sections.map(([title, text], index) => `<section class="lesson-section"><span class="section-number" aria-hidden="true">0${index + 1}</span><div><h3>${title}</h3><p>${text}</p></div></section>`).join("")}
+      ${module.sections.map((section, index) => `<section class="lesson-section"><span class="section-number" aria-hidden="true">0${index + 1}</span><div><h3>${section.title}</h3>${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}<div class="example"><h4>Example</h4><p>${section.example.scenario}</p><p>${section.example.try}</p></div></div></section>`).join("")}
       <div class="source"><span aria-hidden="true">↗</span><div><strong>GO A LITTLE DEEPER</strong><a href="${module.url}" target="_blank" rel="noopener noreferrer">External resource: ${module.source} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p>Evidence and guidance behind this lesson · opens in a new tab</p></div></div>
       <form id="quiz" class="quiz">
         <p class="eyebrow">A MOMENT TO REFLECT</p><h3>Quick check-in</h3><p>${module.questions.length} simple questions. Take your time.</p>
