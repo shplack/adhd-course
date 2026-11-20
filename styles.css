@@ -465,6 +465,15 @@ footer {
 footer p {
   margin: 0.4rem 0;
 }
+.github-link {
+  display: inline-block;
+  vertical-align: middle;
+}
+.github-link svg {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
 :root[data-theme="dark"] {
   color-scheme: dark;
   color: #e4eee8;

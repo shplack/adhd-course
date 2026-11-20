@@ -275,7 +275,7 @@ test("branding and footer remain accessible in both themes on narrow screens", a
   const home = page.getByRole("link", { name: "ADHD for parents" });
   const footer = page.getByRole("contentinfo");
   const github = footer.getByRole("link", {
-    name: "View the course on GitHub",
+    name: "View the course on GitHub (opens in a new tab)",
   });
   await expect(home).toHaveAttribute("href", "/");
   await expect(home).toContainText("🎓");
@@ -286,6 +286,10 @@ test("branding and footer remain accessible in both themes on narrow screens", a
     "href",
     "https://github.com/shplack/adhd-course",
   );
+  await expect(github).toHaveAttribute("target", "_blank");
+  await expect(github).toHaveAttribute("rel", /noopener/);
+  await expect(github).toHaveText("");
+  await expect(github.locator('svg[aria-hidden="true"]')).toBeVisible();
   for (const mode of ["light", "dark"]) {
     if (mode === "dark")
       await page.getByRole("button", { name: "Dark mode" }).click();
