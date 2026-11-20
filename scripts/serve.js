@@ -4,10 +4,29 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 
 const root = resolve(".");
-const watching = process.argv.includes("--watch");
+const args = process.argv.slice(2);
+const watching = args.includes("--watch");
 const clients = new Set();
-const port = process.env.PORT === undefined ? 4173 : Number(process.env.PORT);
-if (!Number.isInteger(port) || port < 0 || port > 65535) {
+let portArgument;
+for (let index = 0; index < args.length; index++) {
+  if (args[index] === "--watch") continue;
+  if (
+    args[index] !== "--port" ||
+    portArgument !== undefined ||
+    index + 1 >= args.length
+  ) {
+    throw new Error("Usage: node scripts/serve.js [--watch] [--port PORT]");
+  }
+  portArgument = args[++index];
+}
+const portText = portArgument ?? process.env.PORT ?? "4173";
+const port = Number(portText);
+if (
+  !/^\d+$/.test(portText) ||
+  !Number.isInteger(port) ||
+  port < 0 ||
+  port > 65535
+) {
   throw new RangeError("PORT must be an integer from 0 to 65535");
 }
 const types = {
