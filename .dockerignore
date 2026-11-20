@@ -1,0 +1,12 @@
+.git
+.gitignore
+node_modules
+tests
+test-results
+playwright-report
+scripts
+*.md
+package*.json
+playwright.config.js
+.pre-commit-config.yaml
+compose.yaml

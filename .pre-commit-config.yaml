@@ -1,0 +1,13 @@
+repos:
+  - repo: local
+    hooks:
+      - id: project-check
+        name: Syntax and formatting
+        entry: npm run check
+        language: system
+        pass_filenames: false
+      - id: progress-tests
+        name: Progress tests
+        entry: npm run test:unit
+        language: system
+        pass_filenames: false

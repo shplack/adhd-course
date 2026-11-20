@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A practical, research-informed ADHD course for parents of adults."
+    />
+    <title>Alongside — ADHD and your adult child</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#lesson">Skip to lesson</a>
+    <header class="site-header">
+      <a class="brand" href="/">alongside<span aria-hidden="true">.</span></a>
+      <span class="header-note">A course for parents &amp; caregivers</span>
+    </header>
+    <div class="page">
+      <aside class="sidebar">
+        <p class="overline">A LITTLE GUIDANCE, TOGETHER</p>
+        <h1>Better understanding.<br /><em>Stronger connection.</em></h1>
+        <p>
+          A gentle guide to supporting your adult child with ADHD, one step at a
+          time.
+        </p>
+        <div class="progress-label">
+          <span>Your progress</span
+          ><strong id="progress-count">0 of 4 modules completed</strong>
+        </div>
+        <progress
+          id="progress-bar"
+          max="4"
+          value="0"
+          aria-label="Modules completed"
+        ></progress>
+        <nav aria-label="Course modules"><ol id="module-list"></ol></nav>
+        <div class="save-box">
+          <strong>Pick up where you left off</strong>
+          <p>
+            Your progress lives in your link, not an account. Save it somewhere
+            private.
+          </p>
+          <button id="copy-link" type="button">
+            Copy my resume link <span aria-hidden="true">↗</span>
+          </button>
+          <label for="resume-link">Your resume link</label>
+          <input id="resume-link" readonly />
+          <p id="copy-message" aria-live="polite"></p>
+        </div>
+      </aside>
+      <main id="lesson" tabindex="-1">
+        <div id="invalid-link" role="alert"></div>
+        <noscript
+          ><p>
+            This interactive course requires JavaScript. For adult ADHD
+            information, visit
+            <a
+              href="https://www.nimh.nih.gov/health/publications/adhd-what-you-need-to-know"
+              >NIMH’s guide to ADHD in adults</a
+            >.
+          </p></noscript
+        >
+        <div id="content"></div>
+      </main>
+    </div>
+    <footer>
+      Made for understanding, not diagnosis. This course is educational and is
+      not medical advice.
+    </footer>
+  </body>
+</html>
