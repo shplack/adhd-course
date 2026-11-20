@@ -4,6 +4,7 @@ import { decodeProgress, encodeProgress } from "./progress.js";
 const $ = (selector) => document.querySelector(selector);
 const fresh = () => ({ current: 0, completed: [] });
 let state = fresh();
+let lastReadUrl;
 
 const themeToggle = $("#theme-toggle");
 const themeStatus = $("#theme-status");
@@ -39,24 +40,54 @@ function tokenFromLocation() {
 
 function readLocation(focus = false, preserveCompleted = false) {
   const token = tokenFromLocation();
-  const decoded = token ? decodeProgress(token, modules.length) : fresh();
+  const decoded = token ? decodeProgress(token, modules) : null;
   const completed = state.completed;
-  state = decoded || fresh();
-  if (decoded && preserveCompleted) {
+  state = decoded?.state || fresh();
+  let mergedProgress = false;
+  if ((!token || decoded) && preserveCompleted) {
     const merged = [...new Set([...state.completed, ...completed])];
-    if (merged.length !== state.completed.length) {
-      state.completed = merged;
-      history.replaceState(null, "", resumeUrl());
-    }
+    mergedProgress = merged.length !== state.completed.length;
+    state.completed = merged;
   }
-  $("#invalid-link").textContent = decoded
-    ? ""
-    : "This resume link could not be read. You are starting a fresh course.";
+  $("#invalid-link").textContent =
+    token && !decoded
+      ? "This resume link could not be read. You are starting a fresh course."
+      : "";
+  const notices = [];
+  if (decoded?.upgraded) notices.push("Your saved link was updated.");
+  if (decoded?.missingDestination)
+    notices.push(
+      "That module is no longer available, so you are at the first module.",
+    );
+  if (decoded?.removed.length)
+    notices.push("Progress for a removed module is no longer available.");
+  if (decoded?.reset.length) {
+    const names = decoded.reset
+      .map((id) => modules.find((module) => module.id === id).title)
+      .join(", ");
+    notices.push(
+      `Please retake these quizzes because they may have changed: ${names}.`,
+    );
+  }
+  const notice = $("#progress-notice");
+  notice.textContent = notices.join(" ");
+  notice.hidden = !notices.length;
+  if (
+    mergedProgress ||
+    (decoded &&
+      (decoded.upgraded ||
+        decoded.missingDestination ||
+        decoded.removed.length ||
+        decoded.reset.length))
+  ) {
+    history.replaceState(null, "", resumeUrl());
+  }
+  lastReadUrl = location.href;
   render(focus);
 }
 
 function resumeUrl() {
-  return `${location.origin}/${encodeProgress(state, modules.length)}`;
+  return `${location.origin}/${encodeProgress(state, modules)}`;
 }
 
 function navigate(index, view) {
@@ -252,5 +283,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("popstate", () => readLocation(true, true));
-window.addEventListener("hashchange", () => readLocation(true));
+window.addEventListener("hashchange", () => {
+  if (location.href !== lastReadUrl) readLocation(true);
+});
 readLocation();

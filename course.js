@@ -1,5 +1,6 @@
 export const modules = [
   {
+    id: "understanding",
     title: "Understanding adult ADHD",
     eyebrow: "Start here",
     intro:
@@ -93,6 +94,7 @@ export const modules = [
     ],
   },
   {
+    id: "support",
     title: "Support without taking over",
     eyebrow: "Connection",
     intro:
@@ -186,6 +188,7 @@ export const modules = [
     ],
   },
   {
+    id: "daily",
     title: "Making daily life easier",
     eyebrow: "Practical tools",
     intro:
@@ -279,6 +282,7 @@ export const modules = [
     ],
   },
   {
+    id: "care",
     title: "Care, treatment and next steps",
     eyebrow: "Moving forward",
     intro:

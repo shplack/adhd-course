@@ -92,18 +92,9 @@ test("each module has a distinct research citation and three to five valid quest
   }
 });
 
-test("existing version 1 course links retain their original module positions and progress", () => {
-  assert.deepEqual(
-    modules.slice(0, 4).map((module) => module.title),
-    [
-      "Understanding adult ADHD",
-      "Support without taking over",
-      "Making daily life easier",
-      "Care, treatment and next steps",
-    ],
-  );
-  assert.deepEqual(decodeProgress("1-2-3-10ij55n", modules.length), {
-    current: 2,
-    completed: [0, 1],
-  });
+test("legacy links resolve to the original module regardless of course order", () => {
+  const shuffled = [...modules].reverse();
+  const result = decodeProgress("1-2-3-10ij55n", shuffled);
+  assert.equal(shuffled[result.state.current].id, "daily");
+  assert.deepEqual(result.state.completed, []);
 });

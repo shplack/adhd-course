@@ -12,6 +12,7 @@ import { join, resolve } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:net";
 import { encodeProgress } from "../progress.js";
+import { modules } from "../course.js";
 
 test("watch accepts an explicit port and rejects invalid ports", async ({
   request,
@@ -97,7 +98,7 @@ test("watch server reloads changed files and preserves a quiz deep link", async 
     });
     const token = encodeProgress(
       { current: 1, completed: [0], view: "quiz" },
-      4,
+      modules,
     );
     const address = `http://127.0.0.1:${port}/${token}`;
     const connected = page.waitForResponse((response) =>

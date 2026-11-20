@@ -5,13 +5,103 @@ import { encodeProgress } from "../progress.js";
 
 test.setTimeout(180_000);
 
+test("legacy links upgrade in place and explain quiz resets", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.goto("/1-2-f-1enyvj8");
+  await expect(
+    page.getByRole("heading", { name: modules[2].title, level: 2 }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: /saved link.*updated/i }),
+  ).toContainText(/retake.*quizzes/i);
+  await expect(page.locator("#progress-count")).toHaveText(
+    "0 of 4 modules completed",
+  );
+  await axe(page);
+  await expect(page).toHaveURL(/\/4-/);
+  expect(await page.getByLabel("Your resume link").inputValue()).toBe(
+    page.url(),
+  );
+  await page.goBack();
+  await expect(
+    page.getByRole("heading", { name: modules[0].title, level: 2 }),
+  ).toBeVisible();
+
+  await page.goto("/#2-2-f-b13pn1");
+  await expect(
+    page.getByRole("heading", { name: `Quiz: ${modules[2].title}`, level: 2 }),
+  ).toBeVisible();
+  await expect(page.locator("#progress-count")).toHaveText(
+    "4 of 4 modules completed",
+  );
+  await expect(page).toHaveURL(/\/4-/);
+  await expect(
+    page.getByRole("status").filter({ hasText: /saved link.*updated/i }),
+  ).toBeVisible();
+});
+
+test("changed or removed modules produce accessible migration feedback", async ({
+  page,
+}) => {
+  const previous = modules.map((module, index) =>
+    index === 1
+      ? {
+          ...module,
+          questions: [
+            { ...module.questions[0], prompt: "Earlier quiz question" },
+            ...module.questions.slice(1),
+          ],
+        }
+      : module,
+  );
+  const outdated = encodeProgress(
+    { current: 3, completed: [0, 1, 2, 3], view: "diploma" },
+    previous,
+  );
+  await page.goto(`/${outdated}`);
+  await expect(
+    page.getByRole("heading", { name: "Not quite there yet" }),
+  ).toBeVisible();
+  await expect(page.locator("#progress-count")).toHaveText(
+    "3 of 4 modules completed",
+  );
+  await expect(page.locator("#progress-notice")).toHaveAttribute(
+    "role",
+    "status",
+  );
+  await expect(page.locator("#progress-notice")).toContainText(
+    modules[1].title,
+  );
+  expect(new URL(page.url()).pathname.slice(1)).not.toBe(outdated);
+  await expect(page.getByLabel("Your resume link")).toHaveValue(page.url());
+  await axe(page);
+
+  const removed = modules.map((module, index) =>
+    index === 0 ? { ...module, id: "removed-module" } : module,
+  );
+  const oldDestination = encodeProgress(
+    { current: 0, completed: [], view: "quiz" },
+    removed,
+  );
+  await page.goto(`/${oldDestination}`);
+  await expect(
+    page.getByRole("heading", { name: modules[0].title, level: 2 }),
+  ).toBeVisible();
+  await expect(page.locator("#progress-notice")).toContainText(
+    /no longer available.*first module/i,
+  );
+  await axe(page);
+});
+
 test("unfinished lessons and quizzes remind pointer users before continuing", async ({
   page,
 }) => {
   for (const view of ["lesson", "quiz"]) {
     const token = encodeProgress(
       { current: 0, completed: [], ...(view === "quiz" ? { view } : {}) },
-      modules.length,
+      modules,
     );
     await page.goto(`/${token}`);
     const next = page.getByRole("button", { name: "Next module" });
@@ -74,7 +164,7 @@ test("completed modules skip the reminder", async ({ page }) => {
   for (const view of ["lesson", "quiz"]) {
     const token = encodeProgress(
       { current: 0, completed: [0], ...(view === "quiz" ? { view } : {}) },
-      modules.length,
+      modules,
     );
     await page.goto(`/${token}`);
     await page.getByRole("button", { name: "Next module" }).click();
@@ -245,7 +335,7 @@ test("dark mode is accessible, independent of progress, and remembers a choice",
   for (const completed of [[], modules.map((_, index) => index)]) {
     const token = encodeProgress(
       { current: 3, view: "diploma", completed },
-      modules.length,
+      modules,
     );
     await page.goto(`/${token}`);
     await axe(page);
@@ -603,7 +693,7 @@ test("completing the last outstanding quiz unlocks the diploma and survives resu
   await expect(page.getByText("I'll do it later...")).toBeVisible();
   const oldLink = encodeProgress(
     { current: 0, completed: [0, 1, 2, 3] },
-    modules.length,
+    modules,
   );
   await page.goto(`/${oldLink}`);
   await page.getByRole("button", { name: "View diploma" }).click();
