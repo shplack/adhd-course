@@ -1,6 +1,6 @@
 # Alongside
 
-A short, research-informed course for parents and caregivers of adults with ADHD. It is educational, not medical advice. Each module links to its evidence source.
+A short, research-informed course for parents and caregivers of adults with ADHD. It is educational, not medical advice. Each module links to its own peer-reviewed research source and ends with three questions; all must be answered correctly to complete it.
 
 ## Run locally
 
@@ -12,7 +12,7 @@ Copy the resume link after navigating or completing a quiz; an older saved link 
 
 ## Checks
 
-Run `npx playwright install chromium` once and `npm test` for unit, keyboard, screen-reader-facing role/name, and axe accessibility checks. `npm run format` formats files; `npm run check` checks formatting and JavaScript syntax. Install the real pre-commit framework (for example with `uvx pre-commit install`) and run `uvx pre-commit run --all-files`. The hooks require Node and `npm ci` dependencies.
+Run `npx playwright install chromium` once and `npm test` for unit, keyboard, screen-reader-facing role/name, and axe accessibility checks across modules and feedback states. `npm run format` formats files; `npm run check` checks formatting and JavaScript syntax. Install the real pre-commit framework (for example with `uvx pre-commit install`) and run `uvx pre-commit run --all-files`. The hooks require Node, `npm ci` dependencies, Docker for hadolint, and network access for the initial tool downloads. Automated checks do not replace testing with a screen reader.
 
 ## Docker
 
@@ -20,5 +20,7 @@ Run `docker compose up --build` and visit <http://127.0.0.1:8080>. The example r
 
 ## Sources
 
-- [NIMH: ADHD in Adults, 4 Things to Know](https://www.nimh.nih.gov/health/publications/adhd-what-you-need-to-know) — adult symptoms, daily functioning, and treatment.
-- [NICE NG87: ADHD diagnosis and management](https://www.nice.org.uk/guidance/ng87/chapter/Recommendations) — shared decisions, environmental modifications, and support.
+- [Faraone SV et al. (2021). The World Federation of ADHD International Consensus Statement: 208 Evidence-based Conclusions about the Disorder. Neuroscience & Biobehavioral Reviews.](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328933/)
+- [Stevens AE et al. (2023). Transitioning to college with ADHD: a qualitative examination of parental support and the renegotiation of the parent-child relationship. Current Psychology.](https://pmc.ncbi.nlm.nih.gov/articles/PMC10041513/) Small qualitative study of 11 college students; findings may not generalize to all adults.
+- [Safren SA et al. (2010). Cognitive Behavioral Therapy vs Relaxation With Educational Support for Medication-Treated Adults With ADHD and Persistent Symptoms: A Randomized Controlled Trial. JAMA.](https://pmc.ncbi.nlm.nih.gov/articles/PMC3641654/)
+- [Cortese S et al. (2018). Comparative efficacy and tolerability of medications for attention-deficit hyperactivity disorder in children, adolescents, and adults: a systematic review and network meta-analysis. The Lancet Psychiatry.](https://pmc.ncbi.nlm.nih.gov/articles/PMC6109107/)

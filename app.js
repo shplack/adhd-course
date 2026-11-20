@@ -42,7 +42,7 @@ function render(focus) {
     .map(
       (item, index) => `
     <li><button type="button" class="module-link ${index === state.current ? "active" : ""}" data-module="${index}" ${index === state.current ? 'aria-current="step"' : ""}>
-      <span class="module-number">${state.completed.includes(index) ? "✓" : String(index + 1).padStart(2, "0")}</span>
+      <span class="module-number" aria-hidden="true">${state.completed.includes(index) ? "✓" : String(index + 1).padStart(2, "0")}</span>
       <span><small>MODULE ${String(index + 1).padStart(2, "0")}</small>${item.title}</span>
       <span class="sr-only">${state.completed.includes(index) ? "Completed" : "Not completed"}</span>
     </button></li>`,
@@ -58,11 +58,18 @@ function render(focus) {
       ${module.sections.map(([title, text], index) => `<section class="lesson-section"><span class="section-number" aria-hidden="true">0${index + 1}</span><div><h3>${title}</h3><p>${text}</p></div></section>`).join("")}
       <div class="source"><span aria-hidden="true">↗</span><div><strong>GO A LITTLE DEEPER</strong><a href="${module.url}" target="_blank" rel="noopener noreferrer">External resource: ${module.source} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><p>Evidence and guidance behind this lesson · opens in a new tab</p></div></div>
       <form id="quiz" class="quiz">
-        <p class="eyebrow">A MOMENT TO REFLECT</p><h3>Quick check-in</h3><p>One simple question. Take your time.</p>
-        <fieldset><legend>${module.question}</legend>
-          ${module.options.map((option, index) => `<label class="answer"><input type="radio" name="answer" value="${index}" /> ${option}</label>`).join("")}
-        </fieldset>
-        <button class="primary" type="submit">Check answer <span aria-hidden="true">→</span></button>
+        <p class="eyebrow">A MOMENT TO REFLECT</p><h3>Quick check-in</h3><p>${module.questions.length} simple questions. Take your time.</p>
+        ${module.questions
+          .map(
+            (
+              question,
+              questionIndex,
+            ) => `<fieldset><legend>Question ${questionIndex + 1}: ${question.prompt}</legend>
+          ${question.options.map((option, index) => `<label class="answer"><input type="radio" name="answer-${questionIndex}" value="${index}" /> ${option}</label>`).join("")}
+        </fieldset>`,
+          )
+          .join("")}
+        <button class="primary" type="submit">Check answers <span aria-hidden="true">→</span></button>
         <p id="quiz-result" role="status" aria-live="polite"></p>
       </form>
       <div class="lesson-navigation">
@@ -81,12 +88,25 @@ function render(focus) {
   $("#next")?.addEventListener("click", () => navigate(state.current + 1));
   $("#quiz").addEventListener("submit", (event) => {
     event.preventDefault();
-    const selected = new FormData(event.currentTarget).get("answer");
-    if (selected === null) {
-      $("#quiz-result").textContent = "Choose an answer before checking.";
-    } else if (Number(selected) !== module.answer) {
-      $("#quiz-result").textContent =
-        "Not quite. Take another look and try again.";
+    const answers = new FormData(event.currentTarget);
+    const missing = [];
+    const incorrect = [];
+    module.questions.forEach((question, index) => {
+      const selected = answers.get(`answer-${index}`);
+      if (selected === null) missing.push(index + 1);
+      else if (Number(selected) !== question.answer) incorrect.push(index + 1);
+    });
+    if (missing.length || incorrect.length) {
+      const feedback = [];
+      if (missing.length)
+        feedback.push(
+          `Unanswered: ${missing.map((number) => `question ${number}`).join(", ")}.`,
+        );
+      if (incorrect.length)
+        feedback.push(
+          `Try again: ${incorrect.map((number) => `question ${number}`).join(", ")}.`,
+        );
+      $("#quiz-result").textContent = feedback.join(" ");
     } else {
       if (!state.completed.includes(state.current))
         state.completed.push(state.current);
