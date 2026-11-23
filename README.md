@@ -10,9 +10,13 @@ Use the Dark mode or Light mode button in the header to change the theme. Light 
 
 ## Progress and privacy
 
-Copy the resume link after navigating or completing a quiz; an older saved link retains its older progress. Links work as `/<token>` or `/#<token>` and do not require an account or server-side storage. Links track the module, lesson/quiz/diploma view, and completed quiz versions, not names or quiz answers; they do not save scroll position or unsubmitted answers. Older links are upgraded when opened. If a quiz has changed, its completion is reset. The oldest links cannot identify which quiz version was completed, so their completed quizzes must be retaken. If a module was removed, the course opens at the first module and explains the change. Links are not secret, encrypted, or tamper-proof: anyone holding one can inspect or change it. The diploma's pretend password is only a joke, not a credential. URLs may appear in browser history, logs, or messages, so share carefully. Invalid links start a fresh course with a message. Deploy at the domain root with a fallback to `index.html`.
+Copy the resume link after navigating or completing a quiz; an older saved link retains its older progress. Links work as `/<token>` or `/#<token>` (under the site base path on GitHub Pages) and do not require an account or server-side storage. Links track the module, lesson/quiz/diploma view, and completed quiz versions, not names or quiz answers; they do not save scroll position or unsubmitted answers. Older links are upgraded when opened. If a quiz has changed, its completion is reset. The oldest links cannot identify which quiz version was completed, so their completed quizzes must be retaken. If a module was removed, the course opens at the first module and explains the change. Links are not secret, encrypted, or tamper-proof: anyone holding one can inspect or change it. The diploma's pretend password is only a joke, not a credential. URLs may appear in browser history, logs, or messages, so share carefully. Invalid links start a fresh course with a message. The Docker deployment uses the domain root and a fallback to `index.html`.
 
 Use **Reset course progress** and confirm to start again. Your theme choice is unchanged, and previously saved resume links still work.
+
+## GitHub Pages
+
+The Pages workflow builds and deploys the static site on pushes to `main`. Enable GitHub Pages with **GitHub Actions** as the source. `npm run build:pages` writes the project-site build to `dist`; set `PAGES_BASE_PATH` to an absolute directory path ending in `/` for another deployment path. GitHub Pages serves the app's `404.html` for path-style resume links, so these requests retain a 404 HTTP status even when the course opens successfully; fragment links avoid that status.
 
 ## Checks
 

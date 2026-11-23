@@ -16,3 +16,4 @@
 - [x] Docker Compose watch rebuilds the container when site or server files change.
 - [x] Non-root static container with a read-only filesystem example and security headers.
 - [x] GitHub Actions builds and publishes multi-platform container images to GHCR.
+- [x] GitHub Actions builds and deploys the static site to GitHub Pages, including project-subpath resume links.

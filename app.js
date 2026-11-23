@@ -2,6 +2,7 @@ import { modules } from "./course.js";
 import { decodeProgress, encodeProgress } from "./progress.js";
 
 const $ = (selector) => document.querySelector(selector);
+const basePath = new URL(".", import.meta.url).pathname;
 const fresh = () => ({ current: 0, completed: [] });
 let state = fresh();
 let lastReadUrl;
@@ -35,7 +36,7 @@ themeToggle.addEventListener("click", () => {
 function tokenFromLocation() {
   return location.hash
     ? location.hash.slice(1)
-    : location.pathname.replace(/^\/|\/$/g, "");
+    : location.pathname.slice(basePath.length).replace(/^\/|\/$/g, "");
 }
 
 function readLocation(focus = false, preserveCompleted = false) {
@@ -87,7 +88,7 @@ function readLocation(focus = false, preserveCompleted = false) {
 }
 
 function resumeUrl() {
-  return `${location.origin}/${encodeProgress(state, modules)}`;
+  return `${location.origin}${basePath}${encodeProgress(state, modules)}`;
 }
 
 function navigate(index, view) {
@@ -279,7 +280,7 @@ $("#reset-progress").addEventListener("click", () => {
       "Are you sure? This starts the course again with no quizzes completed.",
     )
   ) {
-    window.location.assign("/");
+    window.location.assign(basePath);
   }
 });
 document.querySelector(".skip-link").addEventListener("click", (event) => {
